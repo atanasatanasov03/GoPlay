@@ -1,0 +1,17 @@
+body {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to right, #FDFBFB, #EBEDEE 70%);
+}
+
+heading {
+    font-size:50;
+}
+
+footer {
+    font-size: 35;
+    text-align: center;
+}
