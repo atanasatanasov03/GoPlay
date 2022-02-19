@@ -22,7 +22,13 @@ namespace GoPlayServer
                 .AddCertificate();
 
             services.AddControllers();
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
             services.AddIdentityServices(Configuration);
 
 
@@ -58,7 +64,7 @@ namespace GoPlayServer
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200").AllowCredentials());
+            app.UseCors("CorsPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
 

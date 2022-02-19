@@ -9,4 +9,15 @@
     </div>
   </div>
 
+  <form #loginForm="ngForm" *ngIf="(accountService.currentUser$ | async) === null" class="form-inline mt-2 mt-md-0" autocomplete="off"
+        (ngSubmit)="login()" style="margin-left: 69.125%;">
+    <input name="username"
+           [(ngModel)]="model.username"
+           class="form-control mr-sm-2" type="text" placeholder="Username" aria-label="Username">
+    <input name="password"
+           [(ngModel)]="model.password"
+           class="form-control mr-sm-2" type="password" placeholder="Password" aria-label="Password">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</button>
+  </form>
+
 </nav>

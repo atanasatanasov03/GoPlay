@@ -26,6 +26,7 @@ namespace GoPlayServer.Controllers
         {
             if (await UserExists(RegisterUserDTO.userName)) return new BadRequestResult();
 
+            System.Diagnostics.Debug.WriteLine(RegisterUserDTO.firstName);
 
             using var hmac = new HMACSHA512();
 

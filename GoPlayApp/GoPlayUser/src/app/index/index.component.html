@@ -1,9 +1,18 @@
-<app-nav></app-nav>
-
-<body>
-  <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align:center;">
+<body style="width:100%">
+  <div style="text-align: center; height: 792px; display: flex; flex-direction:column; justify-content: center; align-items:center;">
     <h1>Welcome to GoPlay</h1>
     <footer>The first social media platform designed to help people play sports</footer>
-    <button type="button" class="btn btn-primary" style="margin-top:10px;">Register</button>
+
+    <div class="container">
+      <div>
+        <div *ngIf="!registerMode" style="text-align:center;">
+          <button (click)="registerToggle()" class="btn btn-primary btn-lg mr-2 mt-3">Register</button>
+        </div>
+        <div *ngIf="registerMode">
+          <app-register (cancelRegister)="cancelRegisterMode($event)"></app-register>
+        </div>
+      </div>
+    </div>
+
   </div>
 </body>
