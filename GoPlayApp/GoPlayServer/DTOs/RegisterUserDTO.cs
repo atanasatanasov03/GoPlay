@@ -7,12 +7,16 @@ namespace GoPlayServer.DTOs
         [Required]
         public string userName { get; set; }
         [Required]
-        public string firstName { get; set; }
+        public string role { get; set; }
         [Required]
-        public string lastName { get; set; }
+        public string email { get; set; }
         [Required]
         public string password { get; set; }
         [Required]
         public string address { get; set; }
+
+        public string? firstName { get; set; }
+        public string? lastName { get; set; }
+        public int? age { get; set; }
     }
 }

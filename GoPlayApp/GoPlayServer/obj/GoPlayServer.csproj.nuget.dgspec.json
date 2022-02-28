@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\School\\Дипломна работа\\GoPlay\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj": {}
+    "D:\\School\\Дипломна работа\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj": {}
   },
   "projects": {
-    "D:\\School\\Дипломна работа\\GoPlay\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj": {
+    "D:\\School\\Дипломна работа\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\School\\Дипломна работа\\GoPlay\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj",
+        "projectUniqueName": "D:\\School\\Дипломна работа\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj",
         "projectName": "GoPlayServer",
-        "projectPath": "D:\\School\\Дипломна работа\\GoPlay\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj",
+        "projectPath": "D:\\School\\Дипломна работа\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj",
         "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-        "outputPath": "D:\\School\\Дипломна работа\\GoPlay\\GoPlay\\GoPlayApp\\GoPlayServer\\obj\\",
+        "outputPath": "D:\\School\\Дипломна работа\\GoPlay\\GoPlayApp\\GoPlayServer\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -93,6 +93,10 @@
             "Microsoft.IdentityModel.Tokens": {
               "target": "Package",
               "version": "[6.15.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

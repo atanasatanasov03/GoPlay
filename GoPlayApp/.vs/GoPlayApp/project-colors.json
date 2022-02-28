@@ -5,7 +5,17 @@
       "ProjectGuid": "aebe37c6-bbb4-4385-b3e3-26cde03e28db",
       "DisplayName": "GoPlayServer",
       "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    },
+    "e919a14a-d17e-4ad5-af00-84c56c0534d1": {
+      "ProjectGuid": "e919a14a-d17e-4ad5-af00-84c56c0534d1",
+      "DisplayName": "GoPlayUser",
+      "ColorIndex": 1
     }
   },
-  "NextColorIndex": 1
+  "NextColorIndex": 2
 }

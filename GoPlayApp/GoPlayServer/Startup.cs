@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using API.Extensions;
+using GoPlayServer.Interfaces;
 
 namespace GoPlayServer
 {
@@ -17,6 +18,7 @@ namespace GoPlayServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IPostRepository, PostRepository>();
             services.AddAuthentication(
                 CertificateAuthenticationDefaults.AuthenticationScheme)
                 .AddCertificate();

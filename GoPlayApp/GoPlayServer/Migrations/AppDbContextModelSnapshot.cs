@@ -17,25 +17,27 @@ namespace GoPlayServer.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.1");
 
-            modelBuilder.Entity("GoPlayServer.Entities.RegularUser", b =>
+            modelBuilder.Entity("GoPlayServer.Entities.AppUser", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Age")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("address")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("age")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("email")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("firstName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("lastName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<byte[]>("passwordHash")
@@ -46,40 +48,73 @@ namespace GoPlayServer.Migrations
                         .IsRequired()
                         .HasColumnType("BLOB");
 
+                    b.Property<string>("role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("sports")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("userName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("RegularUsers");
+                    b.ToTable("AppUsers");
                 });
 
-            modelBuilder.Entity("GoPlayServer.Entities.SportsCenter", b =>
+            modelBuilder.Entity("GoPlayServer.Entities.NewsPost", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("content")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("heading")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("pictureUrl")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("userId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NewsPosts");
+                });
+
+            modelBuilder.Entity("GoPlayServer.Entities.PlayPost", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("address")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<byte[]>("passwordHash")
+                    b.Property<string>("content")
                         .IsRequired()
-                        .HasColumnType("BLOB");
+                        .HasColumnType("TEXT");
 
-                    b.Property<byte[]>("passwordSalt")
+                    b.Property<string>("heading")
                         .IsRequired()
-                        .HasColumnType("BLOB");
+                        .HasColumnType("TEXT");
 
-                    b.Property<string>("userName")
-                        .IsRequired()
+                    b.Property<Guid>("userId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("SportsCenters");
+                    b.ToTable("PlayPosts");
                 });
 #pragma warning restore 612, 618
         }

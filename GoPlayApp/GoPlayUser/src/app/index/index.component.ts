@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { UserServiceService } from '../services/user.service';
 
 @Component({
@@ -12,14 +13,17 @@ export class IndexComponent implements OnInit {
   registerMode = false;
   users: any;
 
-  constructor(private http: HttpClient, public accountService: UserServiceService) { }
-
+  constructor(private http: HttpClient,
+    public accountService: UserServiceService,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.logged = (this.accountService as any).isLogged();
-    console.log((this.accountService as any).isLogged());
   }
 
+  redirect() {
+    this.router.navigate(['/registerCenter'])
+  }
 
   registerToggle() {
     this.registerMode = !this.registerMode;

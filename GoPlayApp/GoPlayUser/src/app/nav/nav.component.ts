@@ -13,19 +13,20 @@ export class NavComponent implements OnInit {
   logged: boolean;
 
   constructor(
-    public accountService: UserServiceService,
+    public userService: UserServiceService,
     public localStorage: LocalStorageService,
     private router: Router
     ) { }
 
   ngOnInit(): void {
+    this.logged = this.userService.isLogged()
   }
 
   login() {
     console.log(this.model)
-    this.accountService.login(this.model).subscribe(response => {
+    this.userService.login(this.model).subscribe(response => {
       this.localStorage.setToken(response)
-      this.logged = this.accountService.isLogged();
+      this.logged = this.userService.isLogged();
       console.log("in login()", this.logged)
 
       this.router.navigate(['/home'])

@@ -15,19 +15,29 @@ namespace GoPlayServer.Data
             _context = context;
         }
 
-        public void AddUser(RegularUser user)
+        public void AddUser(AppUser user)
         {
-            _context.RegularUsers.Add(user);
+            _context.AppUsers.Add(user);
         }
 
-        public async Task<RegularUser> GetUserByIdAsync(int id)
+        public void Update(AppUser user)
         {
-            return await _context.RegularUsers.FindAsync(id);
+            _context.Entry(user).State = EntityState.Modified;
         }
 
-        public async Task<RegularUser> GetUserByUsernameAsync(string username)
+        public void Delete(AppUser user)
         {
-            return await _context.RegularUsers.SingleOrDefaultAsync(x => x.userName == username);
+            _context.AppUsers.Remove(user);
+        }
+
+        public async Task<AppUser> GetUserByIdAsync(Guid id)
+        {
+            return await _context.AppUsers.FindAsync(id);
+        }
+
+        public async Task<AppUser> GetUserByUsernameAsync(string username)
+        {
+            return await _context.AppUsers.SingleOrDefaultAsync(x => x.userName == username);
         }
 
         public string GetUsernameByTokenAsync(string token)
@@ -46,19 +56,19 @@ namespace GoPlayServer.Data
             return claims.Identity.Name;
         }
 
-        public async Task<IEnumerable<RegularUser>> GetUsersAsync()
+        public async Task<IEnumerable<AppUser>> GetUsersAsync()
         {
-            return await _context.RegularUsers.ToListAsync();
-        }
-
-        public void Update(RegularUser user)
-        {
-            _context.Entry(user).State = EntityState.Modified;
+            return await _context.AppUsers.ToListAsync();
         }
 
         public async Task<bool> SaveAllAsync()
         {
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<IEnumerable<AppUser>> GetUsersbyRoleAsync(string role)
+        {
+            return await _context.AppUsers.Where(u => u.role == role).ToListAsync();
         }
     }
 }

@@ -11,13 +11,19 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LocalStorageService } from './services/local-storage.service';
 import { RegisterComponent } from './register/register.component';
 import { FormsModule } from '@angular/forms';
+import { RegisterCenterComponent } from './register-center/register-center.component';
+import { HomeComponent } from './home/home.component';
+import { CreatePostComponent } from './create-post/create-post.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     IndexComponent,
     NavComponent,
-    RegisterComponent
+    RegisterComponent,
+    RegisterCenterComponent,
+    HomeComponent,
+    CreatePostComponent
   ],
   imports: [
     BrowserModule,

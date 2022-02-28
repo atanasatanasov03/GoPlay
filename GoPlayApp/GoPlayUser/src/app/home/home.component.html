@@ -1,0 +1,8 @@
+<div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 10px;">
+  <div *ngIf="!createpost">
+    <button type="button" (click)="createPostToggle()" class="btn btn-outline-secondary">Create post</button>
+  </div>
+  <div *ngIf="createpost">
+    <app-create-post (cancelCreate)="cancelCreatePost($event)"></app-create-post>
+  </div>
+</div>

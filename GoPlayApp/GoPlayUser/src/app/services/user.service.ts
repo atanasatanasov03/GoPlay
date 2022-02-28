@@ -18,7 +18,7 @@ export class UserServiceService {
   private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
 
-  constructor(private http: HttpClient, private storageService: LocalStorageService) { this.logged = false; }
+  constructor(private http: HttpClient, private storageService: LocalStorageService) {}
 
   register(model: any) {
     return this.http.post(this.accUrl + '/register', model).pipe(
@@ -53,8 +53,7 @@ export class UserServiceService {
 
 
           this.logged = true; 
-          console.log(this.logged); 
-          this.username = user.username;
+          this.username = user.userName;
         }
         return user;
       })
@@ -62,7 +61,6 @@ export class UserServiceService {
   }
 
   isLogged() {
-    console.log(this.logged); 
     return this.logged; 
   }
 

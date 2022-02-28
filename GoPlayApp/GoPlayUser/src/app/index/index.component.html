@@ -7,6 +7,7 @@
       <div>
         <div *ngIf="!registerMode" style="text-align:center;">
           <button (click)="registerToggle()" class="btn btn-primary btn-lg mr-2 mt-3">Register</button>
+          <button (click)="redirect()" class="btn btn-primary btn-lg mr-2 mt-3">Register a Sports Center</button>
         </div>
         <div *ngIf="registerMode">
           <app-register (cancelRegister)="cancelRegisterMode($event)"></app-register>

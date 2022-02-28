@@ -24,6 +24,7 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
+    this.model.role = "regular";
     console.log(this.model);
     this.userService.register(this.model).subscribe(response => {
       console.log(response);
