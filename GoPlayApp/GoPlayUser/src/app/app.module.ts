@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
@@ -14,6 +14,9 @@ import { FormsModule } from '@angular/forms';
 import { RegisterCenterComponent } from './register-center/register-center.component';
 import { HomeComponent } from './home/home.component';
 import { CreatePostComponent } from './create-post/create-post.component';
+import { MessagingComponent } from './messaging/messaging.component';
+import { UserServiceService } from './services/user.service';
+import { RequestInterceptor } from './Interceptors/RequestInterceptor';
 
 @NgModule({
   declarations: [
@@ -23,7 +26,8 @@ import { CreatePostComponent } from './create-post/create-post.component';
     RegisterComponent,
     RegisterCenterComponent,
     HomeComponent,
-    CreatePostComponent
+    CreatePostComponent,
+    MessagingComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +36,15 @@ import { CreatePostComponent } from './create-post/create-post.component';
     NgbModule,
     FormsModule
   ],
-  providers: [LocalStorageService],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: RequestInterceptor,
+      multi: true
+    },
+    UserServiceService,
+    LocalStorageService
+  ],
   bootstrap: [AppComponent],
   entryComponents: [IndexComponent]
 })

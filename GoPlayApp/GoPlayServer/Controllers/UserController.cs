@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
 using GoPlayServer.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GoPlayServer.Controllers
 {
@@ -88,19 +89,6 @@ namespace GoPlayServer.Controllers
             };
         }
 
-        [HttpDelete]
-        public async Task<ActionResult<bool>> deleteUser(string username)
-        {
-            var user = await _userRepo.GetUserByUsernameAsync(username.ToLower());
-
-            if (user == null) return new BadRequestResult();
-
-            _userRepo.Delete(user);
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
         [HttpPost("setSports")]
         public async Task<ActionResult<string>> setSports(setSportsDTO setSports)
         {
@@ -123,6 +111,24 @@ namespace GoPlayServer.Controllers
             if (user == null) return new BadRequestResult();
 
             return user.sports;
+        }
+
+        [Authorize]
+        [HttpGet("getUser")]
+        public async Task<ActionResult<AppUserDTO>> GetUserByUsername(string username)
+        {
+            var user = await _userRepo.GetUserByUsernameAsync(username);
+
+            if (user == null) return new BadRequestResult();
+
+            return Ok(new AppUserDTO
+            {
+                userName = username,
+                firstName = user.firstName,
+                lastName = user.lastName,
+                email = user.email,
+                role = user.role
+            });
         }
 
         public string CreateToken(AppUser user)

@@ -11,6 +11,7 @@
         public string address { get; set; }
         public string email { get; set; }
         public string sports { get; set; }
+        public virtual ICollection<Group> groups { get; set; }
         public byte[] passwordHash { get; set; }
         public byte[] passwordSalt { get; set; }
     }

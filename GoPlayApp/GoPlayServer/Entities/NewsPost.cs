@@ -7,5 +7,6 @@
         public string heading { get; set; }
         public string content { get; set; }
         public string pictureUrl { get; set; }
+        public DateTime timeOfCreation { get; set; }
     }
 }

@@ -17,6 +17,21 @@ namespace GoPlayServer.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.1");
 
+            modelBuilder.Entity("AppUserGroup", b =>
+                {
+                    b.Property<Guid>("groupsId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("usersId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("groupsId", "usersId");
+
+                    b.HasIndex("usersId");
+
+                    b.ToTable("AppUserGroup");
+                });
+
             modelBuilder.Entity("GoPlayServer.Entities.AppUser", b =>
                 {
                     b.Property<Guid>("Id")
@@ -65,6 +80,48 @@ namespace GoPlayServer.Migrations
                     b.ToTable("AppUsers");
                 });
 
+            modelBuilder.Entity("GoPlayServer.Entities.Group", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("groupName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Groups");
+                });
+
+            modelBuilder.Entity("GoPlayServer.Entities.Message", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("text")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("userName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("Message");
+                });
+
             modelBuilder.Entity("GoPlayServer.Entities.NewsPost", b =>
                 {
                     b.Property<Guid>("Id")
@@ -81,6 +138,9 @@ namespace GoPlayServer.Migrations
 
                     b.Property<string>("pictureUrl")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("timeOfCreation")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("userId")
@@ -105,8 +165,15 @@ namespace GoPlayServer.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("groupName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("heading")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("timeOfCreation")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("userId")
@@ -115,6 +182,37 @@ namespace GoPlayServer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PlayPosts");
+                });
+
+            modelBuilder.Entity("AppUserGroup", b =>
+                {
+                    b.HasOne("GoPlayServer.Entities.Group", null)
+                        .WithMany()
+                        .HasForeignKey("groupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GoPlayServer.Entities.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("usersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GoPlayServer.Entities.Message", b =>
+                {
+                    b.HasOne("GoPlayServer.Entities.Group", "group")
+                        .WithMany("messages")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("group");
+                });
+
+            modelBuilder.Entity("GoPlayServer.Entities.Group", b =>
+                {
+                    b.Navigation("messages");
                 });
 #pragma warning restore 612, 618
         }

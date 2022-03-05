@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { NewsPost } from '../models/NewsPost';
 import { PlayPost } from '../models/PlayPost';
 
 @Injectable({
@@ -9,13 +10,14 @@ import { PlayPost } from '../models/PlayPost';
 })
 export class PostsService {
   postUrl = "https://localhost:7170/posts"
-  playPosts: PlayPost[];
+  /*PlayPosts: PlayPost[];
+  NewsPosts: NewsPost[];*/
 
   constructor(private http: HttpClient) { }
 
-  createPlayPost(model: any) {
-    return this.http.post(this.postUrl + '/createPlay', model).pipe(
-      map((response: any) => {})
+  createPlayPost(model: any): Observable<PlayPost> {
+    return this.http.post<PlayPost>(this.postUrl + '/createPlay', model).pipe(
+      map((response: PlayPost) => { return response; })
     );
   }
 
@@ -26,19 +28,22 @@ export class PostsService {
   }
 
   getAllPlayPosts() : Observable<PlayPost[]> {
-    console.log("in post service:")
     return this.http.get<PlayPost[]>(this.postUrl + '/getAllPlay');
   }
 
   getAllNewsPosts() {
-    return this.http.get(this.postUrl + '/getAllNews').pipe(
-      map((response: any) => {
-        const newsPosts = response;
-        return newsPosts;
-      })
-    );
+    return this.http.get<NewsPost[]>(this.postUrl + '/getAllNews');
   }
 
-  getAllPostsFor(user: any) { }
+  /*getPlayPostsFor(user: any) {
+    this.http.get<PlayPost[]>(this.postUrl + '/getPlayPostsFor?username=' + user.username).subscribe(pp => this.PlayPosts = pp);
 
+    return this.PlayPosts;
+  }
+
+  getNewsPostsFor(user: any) {
+    this.http.get<NewsPost[]>(this.postUrl + '/getNewsPostsFor?username=' + user.username).subscribe(np => this.NewsPosts = np);
+
+    return this.NewsPosts;
+  }*/
 }

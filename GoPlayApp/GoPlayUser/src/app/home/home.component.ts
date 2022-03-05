@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { NewsPost } from '../models/NewsPost';
 import { PlayPost } from '../models/PlayPost';
+import { User } from '../models/User';
 import { PostsService } from '../services/posts.service';
 import { UserServiceService } from '../services/user.service';
 
@@ -11,7 +13,8 @@ import { UserServiceService } from '../services/user.service';
 })
 export class HomeComponent implements OnInit {
   createpost = false;
-  posts : PlayPost[];
+  playPosts: PlayPost[];
+  newsPosts: NewsPost[];
 
   constructor(private userService: UserServiceService, private postService: PostsService, private router: Router) { }
 
@@ -20,8 +23,10 @@ export class HomeComponent implements OnInit {
       this.router.navigate(['']);
     }
     this.postService.getAllPlayPosts().subscribe(data => {
-      console.log(data)
-      this.posts = data
+      this.playPosts = data
+    });
+    this.postService.getAllNewsPosts().subscribe(data => {
+      this.newsPosts = data
     });
   }
 

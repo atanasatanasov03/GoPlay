@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using API.Extensions;
 using GoPlayServer.Interfaces;
+using GoPlayServer.Hubs;
 
 namespace GoPlayServer
 {
@@ -18,18 +19,19 @@ namespace GoPlayServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IPostRepository, PostRepository>();
-            services.AddAuthentication(
-                CertificateAuthenticationDefaults.AuthenticationScheme)
+            services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
                 .AddCertificate();
-
+            services.AddSignalR().AddMessagePackProtocol();
             services.AddControllers();
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
-                    builder => builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
+                    builder => builder
+                        .WithOrigins("http://localhost")
+                        .AllowCredentials()
+                        .AllowAnyHeader()
+                        .SetIsOriginAllowed(_ => true)
+                        .AllowAnyMethod());
             });
             services.AddIdentityServices(Configuration);
 
@@ -41,7 +43,7 @@ namespace GoPlayServer
             //     {
             //         options.TokenValidationParameters = new TokenValidationParameters
             //         {
-            //             ValidateIssuerSigningKey=true,
+            //             ValidateIssuerSigningKey=true,Hibs
             //             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("dasdaadsadasd2131312deni")),
             //             ValidateIssuer = false,
             //             ValidateAudience = false
@@ -73,6 +75,7 @@ namespace GoPlayServer
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<MessageHub>("/message");
             });
         }
     }

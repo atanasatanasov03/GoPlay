@@ -1,7 +1,9 @@
 ﻿using GoPlayServer.Data;
 using GoPlayServer.DTOs;
 using GoPlayServer.Entities;
+using GoPlayServer.Hubs;
 using GoPlayServer.Interfaces;
+using Microsoft.AspNet.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,30 +16,48 @@ namespace GoPlayServer.Controllers
         private readonly AppDbContext _context;
         private readonly IPostRepository _postRepo;
         private readonly IUserRepository _userRepo;
+        private readonly IGroupRepository _groupRepo;
 
-        public PostController(AppDbContext context, IPostRepository postRepo, IUserRepository userRepo)
+        public PostController(AppDbContext context, IPostRepository postRepo, IUserRepository userRepo,
+            IGroupRepository groupRepo)
         {
             _context = context;
             _postRepo = postRepo;
             _userRepo = userRepo;
+            _groupRepo = groupRepo;
         }
 
         [HttpPost("createPlay")]
         public async Task<ActionResult<PlayPostDTO>> createPlayPost(NewPlayPostDTO newPlayPostDTO)
-        {
+            {
             if (!await UserExists(newPlayPostDTO.userName)) return new BadRequestResult();
 
             var user = await _userRepo.GetUserByUsernameAsync(newPlayPostDTO.userName);
 
+            if (user == null) return new BadRequestResult();
+
+            var group = new Group
+            {
+                groupName = string.Concat(newPlayPostDTO.content.Substring(0, 5), newPlayPostDTO.heading.Substring(0, 5)),
+                users = new List<AppUser>()
+            };
+            group.users.Add(user);
+            user.groups.Add(group);
+            
             var playPost = new PlayPost
             {
                 userId = user.Id,
                 heading = newPlayPostDTO.heading,
                 content = newPlayPostDTO.content,
-                address = newPlayPostDTO.address
+                address = newPlayPostDTO.address,
+                groupName = group.groupName,
+                timeOfCreation = DateTime.Now
             };
 
             _postRepo.AddPlayPost(playPost);
+            _groupRepo.AddGroup(group);
+            _userRepo.Update(user);
+            
             await _context.SaveChangesAsync();
 
             return new PlayPostDTO
@@ -45,7 +65,9 @@ namespace GoPlayServer.Controllers
                 userName = user.userName,
                 heading = playPost.heading,
                 content = playPost.content,
-                address = playPost.address
+                address = playPost.address,
+                groupName = playPost.groupName,
+                timeOfCreation = playPost.timeOfCreation
             };
         }
 
@@ -55,13 +77,15 @@ namespace GoPlayServer.Controllers
             if (!await UserExists(newNewsPostDTO.userName)) return new BadRequestResult();
 
             var user = await _userRepo.GetUserByUsernameAsync(newNewsPostDTO.userName);
+            if (user.role != "center") return new ForbidResult();
 
             var newsPost = new NewsPost
             {
                 userId = user.Id,
                 heading = newNewsPostDTO.heading,
                 content = newNewsPostDTO.content,
-                pictureUrl = newNewsPostDTO.pictureUrl
+                pictureUrl = newNewsPostDTO.pictureUrl,
+                timeOfCreation = DateTime.Now
             };
 
             _postRepo.AddNewsPost(newsPost);
@@ -73,7 +97,8 @@ namespace GoPlayServer.Controllers
                 userName = user.userName,
                 heading = newsPost.heading,
                 content = newsPost.content,
-                pictureUrl = newsPost.pictureUrl
+                pictureUrl = newsPost.pictureUrl,
+                timeOfCreation = newsPost.timeOfCreation
             };
         }
 
@@ -90,7 +115,9 @@ namespace GoPlayServer.Controllers
                     userName = user.userName,
                     heading = playPost.heading,
                     content = playPost.content,
-                    address = playPost.address
+                    address = playPost.address,
+                    groupName = playPost.groupName,
+                    timeOfCreation = playPost.timeOfCreation
                 });
             }
 
@@ -112,7 +139,59 @@ namespace GoPlayServer.Controllers
                     userName = user.userName,
                     heading = newsPost.heading,
                     content = newsPost.content,
-                    pictureUrl = newsPost.pictureUrl
+                    pictureUrl = newsPost.pictureUrl,
+                    timeOfCreation = newsPost.timeOfCreation
+                });
+            }
+
+            return Ok(newsPostsDTOs);
+        }
+
+        [HttpGet("getPlayPostsFor")]
+        public async Task<ActionResult<List<PlayPost>>> getPlayPostsFor(string username)
+        {
+            var user = await _userRepo.GetUserByUsernameAsync(username);
+            if (user == null) return new BadRequestResult();
+
+            var playPosts = await _postRepo.GetPlayPostsByUserIdAsync(user.Id);
+            if (playPosts == null) return NotFound();
+
+            var playPostsDTOs = new List<PlayPostDTO>();
+
+            foreach (var playPost in playPosts)
+            {
+                playPostsDTOs.Add(new PlayPostDTO
+                {
+                    userName = username,
+                    heading = playPost.heading,
+                    content = playPost.content,
+                    address = playPost.address,
+                    timeOfCreation = playPost.timeOfCreation
+                });
+            }
+
+            return Ok(playPostsDTOs);
+        }
+
+        [HttpGet("getNewsPostsFor")]
+        public async Task<ActionResult<List<PlayPost>>> getNewsPostsFor(string username)
+        {
+            var user = await _userRepo.GetUserByUsernameAsync(username);
+            if (user == null || user.role != "center") return new BadRequestResult();
+
+            var newsPosts = await _postRepo.GetNewsPostsByUserIdAsync(user.Id);
+            if (newsPosts == null) return NotFound();
+
+            var newsPostsDTOs = new List<NewsPostDTO>();
+            foreach (var newsPost in newsPosts)
+            {
+                newsPostsDTOs.Add(new NewsPostDTO
+                {
+                    userName = username,
+                    heading = newsPost.heading,
+                    content = newsPost.content,
+                    pictureUrl = newsPost.pictureUrl,
+                    timeOfCreation = newsPost.timeOfCreation
                 });
             }
 

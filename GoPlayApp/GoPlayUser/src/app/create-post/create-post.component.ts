@@ -1,7 +1,9 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { MessageServiceService } from '../services/message-service.service';
 import { PostsService } from '../services/posts.service';
 import { UserServiceService } from '../services/user.service';
+import { PlayPost } from '../models/PlayPost'
 
 @Component({
   selector: 'app-create-post',
@@ -14,7 +16,8 @@ export class CreatePostComponent implements OnInit {
 
   constructor(private userService: UserServiceService,
     private postService: PostsService,
-    private router: Router
+    private router: Router,
+    private messageService: MessageServiceService
   ) { }
 
   ngOnInit(): void {
@@ -23,7 +26,6 @@ export class CreatePostComponent implements OnInit {
   createPost() {
     console.log(this.userService.username);
     this.model.userName = this.userService.username;
-    console.log(this.model);
     this.postService.createPlayPost(this.model).subscribe(response => {
       console.log(response);
       this.cancel();
@@ -31,6 +33,7 @@ export class CreatePostComponent implements OnInit {
     }, error => {
       console.log(error);
     })
+
   }
 
   cancel() {

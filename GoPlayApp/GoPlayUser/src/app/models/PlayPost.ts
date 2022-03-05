@@ -3,4 +3,6 @@ export interface PlayPost {
   heading: string;
   content: string;
   address: string;
+  groupName: string;
+  timeOfCreation: Date;
 }

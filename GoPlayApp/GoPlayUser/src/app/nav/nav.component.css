@@ -19,3 +19,7 @@ body {
   color: white;
   font-family: 'Raleway';
 }
+
+.nav-item {
+  cursor: pointer;
+}

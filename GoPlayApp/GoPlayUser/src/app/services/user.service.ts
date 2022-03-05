@@ -10,7 +10,6 @@ import { LocalStorageService } from './local-storage.service';
   providedIn: 'root'
 })
 export class UserServiceService {
-
   accUrl = "https://localhost:7170/users";
   logged: boolean;
   username: string;
@@ -69,9 +68,12 @@ export class UserServiceService {
     this.currentUserSource.next(user);
   }
 
+  getUserByUsername(username: string) {
+    return this.http.get<User>(this.accUrl + '/getUser?username=' + username);
+  }
 
   getCurrentUser() {
-    let user: any | undefined = JSON.parse(localStorage.getItem('user')!);
+    let user: User | undefined = JSON.parse(localStorage.getItem('user')!);
     return user == null ? null : user;
   }
 

@@ -11,6 +11,8 @@ namespace GoPlayServer.Data
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<PlayPost> PlayPosts { get; set; }
         public DbSet<NewsPost> NewsPosts { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<Message> Message { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

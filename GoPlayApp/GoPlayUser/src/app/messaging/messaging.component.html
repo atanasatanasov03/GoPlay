@@ -1,0 +1,29 @@
+<br /><br />
+
+<div class="container mt-5">
+  <div *ngIf="!this.joinedGroup">
+    <h1>Basic SignalR</h1>
+    <input type="text" class="mt-3 mb-3 mr-3" [(ngModel)]="groupName">
+    <button class="btn btn-primary" (click)="joinGroup()">Join Group</button>
+  </div>
+
+  <div *ngIf="this.joinedGroup">
+    <h1>{{this.groupName}}</h1>
+    <input type="text" id="text" class="mt-3 mb-3 mr-3" [(ngModel)]="text">
+
+    <button class="btn btn-primary" [disabled]="text.length==0" onclick="document.getElementById('text').value = ''" (click)="sendMessage()">Send Message</button>
+    <h4 class="mb-3">List of Messages</h4>
+
+    <div *ngIf="messageService.messages.length==0">
+      <p>You haven't send or received messages</p>
+    </div>
+    <div *ngFor="let m of messageService.messages">
+      <div class="mb-2 mt-2">
+        <div><strong>{{m.username}} : {{m.text}}</strong></div>
+        <sup>{{m.dateTime | date : 'short'}}</sup>
+        <hr>
+      </div>
+    </div>
+  </div>
+  
+</div>

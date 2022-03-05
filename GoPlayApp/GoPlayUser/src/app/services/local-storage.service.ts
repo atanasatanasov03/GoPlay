@@ -17,13 +17,13 @@ export class LocalStorageService {
     localStorage.setItem('User', JSON.stringify(user));
   }
 
-  public getToken() {
-    let token : string | undefined = JSON.parse(localStorage.getItem('Authorization')!);
-    return token == null ? null : token;
+  public getToken(): Token{
+    const token = localStorage.getItem('Authorization');
+    return token !== null ? JSON.parse(token) : null;
   }
 
   public getUser() {
-    let user : string | undefined = JSON.parse(localStorage.getItem('User')!);
-    return user == null ? null : user;
+    let user = localStorage.getItem('User');
+    return user !== null ? JSON.parse(user) : null;
   }
 }

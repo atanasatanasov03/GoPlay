@@ -6,5 +6,6 @@
         public Guid userId { get; set; }
         public string heading { get; set; }
         public string content { get; set; }
+        public DateTime timeOfCreation { get; set; }
     }
 }

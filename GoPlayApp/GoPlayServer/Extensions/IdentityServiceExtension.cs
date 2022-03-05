@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using GoPlayServer.Interfaces;
 using GoPlayServer.Data;
+using GoPlayServer.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace API.Extensions
 {
@@ -11,10 +13,16 @@ namespace API.Extensions
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
         {
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IGroupRepository, GroupRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<Hub, MessageHub>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
