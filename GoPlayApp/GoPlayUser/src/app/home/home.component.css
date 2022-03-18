@@ -21,9 +21,9 @@
   align-items: center;
 }
 
-.button {
+.side-component {
   align-items: center;
   justify-content: center;
-  
-  margin-top: 25%;  
+  top: 10%;
+  position: sticky;
 }

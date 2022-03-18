@@ -15,7 +15,12 @@
       "ProjectGuid": "e919a14a-d17e-4ad5-af00-84c56c0534d1",
       "DisplayName": "GoPlayUser",
       "ColorIndex": 1
+    },
+    "919fd655-f067-4ba2-b932-d926e85dd6b4": {
+      "ProjectGuid": "919fd655-f067-4ba2-b932-d926e85dd6b4",
+      "DisplayName": "Script Documents",
+      "ColorIndex": 2
     }
   },
-  "NextColorIndex": 2
+  "NextColorIndex": 3
 }

@@ -15,12 +15,14 @@ namespace GoPlayServer.Controllers
         private readonly AppDbContext _context;
         private readonly IHubContext<MessageHub> hubContext;
         private readonly IMessageRepository _messageRepo;
+        private readonly IGroupRepository _groupRepo;
 
-        public ChatController(IHubContext<MessageHub> hubContext, IMessageRepository messageRepo, AppDbContext context)
+        public ChatController(IHubContext<MessageHub> hubContext, IMessageRepository messageRepo, AppDbContext context, IGroupRepository groupRepo)
         {
             this.hubContext = hubContext;
             _messageRepo = messageRepo;
             _context = context;
+            _groupRepo = groupRepo;
         }
 
         /*[HttpPost("/message")]
@@ -40,9 +42,9 @@ namespace GoPlayServer.Controllers
             if (group.messages == null) group.messages = new List<Message>();
 
             var message = new Message {
-                text = messageDto.Text,
+                text = messageDto.text,
                 userName = messageDto.username,
-                date = messageDto.DateTime,
+                date = messageDto.dateTime,
                 group = group,
                 GroupId = group.Id
             };
@@ -61,6 +63,30 @@ namespace GoPlayServer.Controllers
             //if (messages == null) return new EmptyResult;
             //else
             return Ok(messages);
+        }
+
+        [HttpGet("getGroupsFor")]
+        public async Task<ActionResult<List<string>>> GetGroupsFor(string username)
+        {
+            IQueryable<Group> groups = await _groupRepo.GetGroupsForUser(username);
+
+            if (groups is null) return new BadRequestResult();
+
+            List<string> groupNames = new List<string>();
+
+            foreach (var group in groups)
+            {
+                groupNames.Add(group.groupName);
+            }
+
+            return Ok(groupNames);
+        }
+
+        [HttpPost("removeFromGroup")]
+        public async Task<ActionResult> RemoveFromGroup(string username, string groupname)
+        {
+            await _groupRepo.RemoveFromGroup(username, groupname);
+            return Ok();
         }
     }
 }

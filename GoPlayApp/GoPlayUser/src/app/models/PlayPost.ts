@@ -1,4 +1,5 @@
 export interface PlayPost {
+  id: string;
   userName: string;
   heading: string;
   content: string;

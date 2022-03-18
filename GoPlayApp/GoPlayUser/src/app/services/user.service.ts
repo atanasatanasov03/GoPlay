@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Token } from '../models/Token';
@@ -13,11 +14,14 @@ export class UserServiceService {
   accUrl = "https://localhost:7170/users";
   logged: boolean;
   username: string;
+  role: string;
+  muted: boolean = false;
+  isBanned: boolean = false;
 
   private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
 
-  constructor(private http: HttpClient, private storageService: LocalStorageService) {}
+  constructor(private http: HttpClient, private storageService: LocalStorageService, private router: Router) { }
 
   register(model: any) {
     return this.http.post(this.accUrl + '/register', model).pipe(
@@ -28,7 +32,8 @@ export class UserServiceService {
           this.setCurrentUser(user);
           console.log(user);
 
-          this.logged = true; 
+          this.logged = true;
+          this.role = user.role;
           this.username = user.username;
         }
         return user;
@@ -38,8 +43,6 @@ export class UserServiceService {
 
 
   login(model: any): Observable<Token> {
-    var data = "grant_type=password&username=" + model.username + "&password=" + model.passoword;
-
     return this.http.post<Token>(this.accUrl + '/login', model).pipe(
       map((response: any) => {
         const user = response;
@@ -50,9 +53,15 @@ export class UserServiceService {
           this.setCurrentUser(user);
           console.log(user);
 
-
+          this.role = user.role;
           this.logged = true; 
           this.username = user.userName;
+          if (user.mutedOn != null) {
+            this.muted = true;
+          }
+          if (user.banned) {
+            this.isBanned = true;
+          }
         }
         return user;
       })

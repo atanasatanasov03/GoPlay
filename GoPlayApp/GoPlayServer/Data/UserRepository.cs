@@ -1,8 +1,12 @@
-﻿using GoPlayServer.Entities;
+﻿using GoPlayServer.DTOs;
+using GoPlayServer.Entities;
+using GoPlayServer.Helpers;
 using GoPlayServer.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace GoPlayServer.Data
@@ -10,6 +14,7 @@ namespace GoPlayServer.Data
     public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
+        private readonly string secret = "Nasko.DiplomnaRabota.Key";
         public UserRepository(AppDbContext context)
         {
             _context = context;
@@ -42,7 +47,7 @@ namespace GoPlayServer.Data
 
         public string GetUsernameByTokenAsync(string token)
         {
-            string secret = "Nasko.DiplomnaRabota.Key";
+            
             var key = Encoding.ASCII.GetBytes(secret);
             var handler = new JwtSecurityTokenHandler();
             var validations = new TokenValidationParameters
@@ -69,6 +74,58 @@ namespace GoPlayServer.Data
         public async Task<IEnumerable<AppUser>> GetUsersbyRoleAsync(string role)
         {
             return await _context.AppUsers.Where(u => u.role == role).ToListAsync();
+        }
+        
+        public string GenerateJwtToken(AppUser user)
+        {
+            // generate token that is valid for 7 days
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+        public async Task<AppUserDTO> Authenticate(LoginDTO loginDto)
+        {
+            var user = await GetUserByUsernameAsync(loginDto.username.ToLower());
+
+            using var hmac = new HMACSHA512(user.passwordSalt);
+
+            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.password));
+
+            for (int i = 0; i < computedHash.Length; i++)
+            {
+                if (computedHash[i] != user.passwordHash[i]) return null;
+            }
+
+            if (user.mutedOn.HasValue)
+            {
+                DateTime muted = (DateTime)user.mutedOn;
+                if (DateTime.Now >= muted.AddDays((double)user.mutedFor))
+                {
+                    user.mutedOn = null;
+                    user.mutedFor = null;
+                }
+            }
+
+            return new AppUserDTO
+            {
+                userName = user.userName,
+                role = user.role,
+                firstName = user.firstName,
+                lastName = user.lastName,
+                email = user.email,
+                token = GenerateJwtToken(user),
+                mutedOn = user.mutedOn,
+                mutedFor = user.mutedFor,
+                banned = user.banned
+            };
         }
     }
 }

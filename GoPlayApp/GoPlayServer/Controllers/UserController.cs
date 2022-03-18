@@ -58,7 +58,7 @@ namespace GoPlayServer.Controllers
                 firstName = user.firstName,
                 lastName = user.lastName,
                 email = user.email,
-                token = CreateToken(user)
+                token = _userRepo.GenerateJwtToken(user)
             };
         }
 
@@ -67,26 +67,48 @@ namespace GoPlayServer.Controllers
         {
             if(!await UserExists(loginDto.username)) return new UnauthorizedResult();
 
-            var user = await _userRepo.GetUserByUsernameAsync(loginDto.username.ToLower());
+            AppUserDTO userDto = await _userRepo.Authenticate(loginDto);
 
-            using var hmac = new HMACSHA512(user.passwordSalt);
+            if (userDto is null) return Unauthorized("Bad credentials");
 
-            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.password));
+            return Ok(userDto);
+        }
 
-            for (int i = 0; i < computedHash.Length; i++)
-            {
-                if (computedHash[i] != user.passwordHash[i]) return new UnauthorizedResult();
-            }
+        /*[HttpGet("getGroupsFor")]
+        public async Task<ActionResult<List<string>>> GetGroupsFor(string username)
+        {
+            
+        }*/
 
-            return new AppUserDTO
-            {
-                userName = user.userName,
-                role = user.role,
-                firstName = user.firstName,
-                lastName = user.lastName,
-                email = user.email,
-                token = CreateToken(user)
-            };
+        [HttpPost("muteUser")]
+        public async Task<ActionResult> MuteUser(string username, int period)
+        {
+            var user = await _userRepo.GetUserByUsernameAsync(username);
+
+            if (user == null) return new BadRequestResult();
+
+            user.mutedOn = DateTime.Now;
+            user.mutedFor = period;
+
+            _userRepo.Update(user);
+            await _context.SaveChangesAsync();
+
+            return Ok("done");
+        }
+
+        [HttpPost("banUser")]
+        public async Task<ActionResult> banUser(string username)
+        {
+            var user = await _userRepo.GetUserByUsernameAsync(username);
+
+            if (user == null) return new BadRequestResult();
+
+            user.banned = true;
+
+            _userRepo.Update(user);
+            await _context.SaveChangesAsync();
+
+            return Ok("done");
         }
 
         [HttpPost("setSports")]
@@ -131,7 +153,7 @@ namespace GoPlayServer.Controllers
             });
         }
 
-        public string CreateToken(AppUser user)
+        /*public string CreateToken(AppUser user)
         {
             var claims = new List<Claim>
             {
@@ -151,7 +173,7 @@ namespace GoPlayServer.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
-        }
+        }*/
 
         public async Task<bool> UserExists(string username)
         {

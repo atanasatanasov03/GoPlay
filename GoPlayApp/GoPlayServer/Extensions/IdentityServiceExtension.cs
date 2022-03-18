@@ -5,6 +5,7 @@ using GoPlayServer.Interfaces;
 using GoPlayServer.Data;
 using GoPlayServer.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using GoPlayServer.Helpers;
 
 namespace API.Extensions
 {
@@ -22,14 +23,14 @@ namespace API.Extensions
                 .AddJwtBearer(options =>
                 {
                     options.RequireHttpsMetadata = false;
-                    options.SaveToken = true;
+                    /*options.SaveToken = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"])),
                         ValidateIssuer = false,
                         ValidateAudience = false,
-                    };
+                    };*/
 
                     //For SignalR
                     options.Events = new JwtBearerEvents

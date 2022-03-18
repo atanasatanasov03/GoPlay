@@ -6,5 +6,9 @@ export class User {
   }
 
   username: string;
+  role: string;
   token: Token;
+  mutedOn: Date;
+  mutedFor: number;
+  banned: boolean;
 }

@@ -1,5 +1,5 @@
 <body style="width:100%">
-  <div style="text-align: center; height: 792px; display: flex; flex-direction:column; justify-content: center; align-items:center;">
+  <div *ngIf="!this.userService.isBanned" style="text-align: center; height: 792px; display: flex; flex-direction:column; justify-content: center; align-items:center;">
     <h1>Welcome to GoPlay</h1>
     <footer>The first social media platform designed to help people play sports</footer>
 
@@ -14,6 +14,9 @@
         </div>
       </div>
     </div>
-
+  </div>
+  <div *ngIf="this.userService.isBanned">
+    YOU HAVE BEEN THE NAUGHTIEST OF NAUGHTY BOYS AND FOR THAT YOU HAVE BEEN BANNED FROM GOPLAY
+    HAVE A NICE DAY
   </div>
 </body>

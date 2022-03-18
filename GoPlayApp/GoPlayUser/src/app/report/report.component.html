@@ -1,0 +1,11 @@
+<div class="card">
+  <h5 class="card-header">{{this.postToReport.heading}}</h5>
+  <div class="card-body">
+    <h5 class="card-title">File a report against {{this.postToReport.userName}}'s post</h5>
+    <textarea style="margin-bottom:3%" class="form-control"
+              rows="3" placeholder="Reason" [(ngModel)]="model.reason"></textarea>
+
+    <button class="btn btn-primary" (click)="submitReport()">Submit</button>
+    <button style="float:right" class="btn btn-light" (click)="cancelReport()">Cancel</button>
+  </div>
+</div>

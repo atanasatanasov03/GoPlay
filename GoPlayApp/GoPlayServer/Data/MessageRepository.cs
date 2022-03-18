@@ -24,9 +24,9 @@ namespace GoPlayServer.Data
             foreach(var message in messages)
             {
                 messageDTOs.Add(new MessageDTO { 
-                    Text = message.text,
+                    text = message.text,
                     username = message.userName,
-                    DateTime = message.date,
+                    dateTime = message.date,
                     groupName = groupname
                 });
             }

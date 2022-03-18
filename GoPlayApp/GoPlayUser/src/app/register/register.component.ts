@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { NotificationService } from '../services/notification.service';
 import { UserServiceService } from '../services/user.service';
 
 @Component({
@@ -16,6 +17,7 @@ export class RegisterComponent implements OnInit {
   logged: any;
 
   constructor(private userService: UserServiceService,
+    private notificationService: NotificationService,
     private router: Router) {
     this.logged = userService.isLogged;
   }
@@ -29,6 +31,7 @@ export class RegisterComponent implements OnInit {
     this.userService.register(this.model).subscribe(response => {
       console.log(response);
       this.cancel();
+      this.notificationService.showSuccess("You have successfully registered your account", "")
       this.router.navigate(['/home'])
     }, error => {
       console.log(error);

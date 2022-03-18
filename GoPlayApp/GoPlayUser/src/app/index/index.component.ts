@@ -14,11 +14,11 @@ export class IndexComponent implements OnInit {
   users: any;
 
   constructor(private http: HttpClient,
-    public accountService: UserServiceService,
+    public userService: UserServiceService,
     private router: Router) { }
 
   ngOnInit(): void {
-    this.logged = (this.accountService as any).isLogged();
+    this.logged = (this.userService as any).isLogged();
   }
 
   redirect() {

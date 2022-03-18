@@ -17,6 +17,8 @@ namespace GoPlayServer.Data
 
         public void AddPlayPost(PlayPost playPost) => _context.PlayPosts.Add(playPost);
 
+        public void ReportPost(ReportedPost reported) => _context.ReportedPosts.Add(reported);
+
         public async Task<IEnumerable<NewsPost>> GetNewsPostsAsync()
         {
             return await _context.NewsPosts.ToListAsync();
@@ -35,6 +37,11 @@ namespace GoPlayServer.Data
         public async Task<IEnumerable<PlayPost>> GetPlayPostsByUserIdAsync(Guid id)
         {
             return await _context.PlayPosts.Where(p => p.userId == id).ToListAsync();
+        }
+
+        public async Task<IEnumerable<ReportedPost>> GetReportedPosts()
+        {
+            return await _context.ReportedPosts.ToListAsync();
         }
     }
 }

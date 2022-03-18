@@ -8,5 +8,8 @@
         public string? firstName { get; set; }
         public string? lastName { get; set; }
         public string? token { get; set; }
+        public DateTime? mutedOn { get; set; }
+        public int? mutedFor { get; set; }
+        public bool banned { get; set; } = false;
     }
 }

@@ -29,7 +29,7 @@ namespace GoPlayServer.Controllers
 
         [HttpPost("createPlay")]
         public async Task<ActionResult<PlayPostDTO>> createPlayPost(NewPlayPostDTO newPlayPostDTO)
-            {
+        {
             if (!await UserExists(newPlayPostDTO.userName)) return new BadRequestResult();
 
             var user = await _userRepo.GetUserByUsernameAsync(newPlayPostDTO.userName);
@@ -42,6 +42,7 @@ namespace GoPlayServer.Controllers
                 users = new List<AppUser>()
             };
             group.users.Add(user);
+            if (user.groups == null) user.groups = new List<Group>();
             user.groups.Add(group);
             
             var playPost = new PlayPost
@@ -112,6 +113,7 @@ namespace GoPlayServer.Controllers
             {
                 var user = await _userRepo.GetUserByIdAsync(playPost.userId);
                 playPostsDTOs.Add(new PlayPostDTO{
+                    Id = playPost.Id,
                     userName = user.userName,
                     heading = playPost.heading,
                     content = playPost.content,
@@ -196,6 +198,48 @@ namespace GoPlayServer.Controllers
             }
 
             return Ok(newsPostsDTOs);
+        }
+
+        [HttpPost("report")]
+        public async Task<ActionResult> ReportPost(ReportPostDTO reportdto)
+        {
+            var user = await _userRepo.GetUserByUsernameAsync(reportdto.username);
+            if (user == null) return new BadRequestResult();
+
+            var report = new ReportedPost
+            {
+                reportedPostId = reportdto.postId,
+                timestamp = DateTime.Now,
+                reporterId = user.Id,
+                reason = reportdto.reason
+            };
+
+            _postRepo.ReportPost(report);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpGet("reported")]
+        public async Task<ActionResult<List<ReportedPost>>> GetReportedPosts()
+        {
+            var reportedPosts = await _postRepo.GetReportedPosts();
+            var reportedPostsDTOs = new List<ReportedPostDTO>();
+
+            foreach(var post in reportedPosts)
+            {
+                var playPost = await _context.PlayPosts.SingleOrDefaultAsync(p => p.Id == post.reportedPostId);
+                var user = await _context.AppUsers.SingleOrDefaultAsync(u => u.Id == post.reporterId);
+                reportedPostsDTOs.Add(new ReportedPostDTO
+                {
+                    reportedPost = playPost,
+                    timestamp = post.timestamp,
+                    reporter = user,
+                    reason = post.reason
+                });
+            }
+
+            return Ok(reportedPostsDTOs);
         }
 
         public async Task<bool> UserExists(string userName)

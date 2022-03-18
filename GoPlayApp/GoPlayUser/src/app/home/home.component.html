@@ -1,15 +1,48 @@
 <div class="wrapper">
   <div class="page-side">
-    yo
+    <div class="side-component">
+      <app-report *ngIf="this.report" [postToReport]="post" (cancelEvent)="this.report = $event"></app-report>
+    </div>
   </div>
-  <main class="page-main">
-    <div style="margin-top:25%">
+  <main class="page-main" style="position: relative">
+    <div style="margin-top: 10%;" class=" d-flex justify-content-center align-items-center">
+      <h1 *ngIf="this.userService.role != 'admin'" style="text-align:center">HOME PAGE FEED</h1>
+      <div *ngIf="this.userService.role == 'admin'">
+        <ng-toggle onColor="success"
+                   onText="Home Page"
+                   offColor="warning"
+                   offText="Admin"
+                   [disabled]="false"
+                   [size]=""
+                   [(ngModel)]="this.adminhome">
+        </ng-toggle>
+      </div>
+    </div>
+
+    <div *ngIf="this.loaded && this.adminhome">
+      <div *ngFor="let playPost of this.postService.PlayPosts; let i = index">
+        <div class="card" style="width: 100%; margin-top: 20px; margin-bottom: 20px">
+          <div class="card-body">
+            <div class="d-flex aligns-items-center justify-content-between" style="margin-bottom: 10px">
+              <h5 class="card-title" style="display:inline-block">{{playPost.heading}}</h5>
+              <button type="button" (click)="reportPost(playPost)" class="btn btn-primary btn-sm">Report</button>
+            </div>
+            <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block">Posted by: {{playPost.userName}}</h6>
+            <p class="card-text">{{playPost.content}}</p>
+            <p class="card-text">Address: {{playPost.address}}</p>
+            <div class="d-flex aligns-items-center justify-content-between">
+              <a class="card-link" style="cursor: pointer;" (click)="sendToGroup(playPost)">Send to Group</a>
+              <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block"> {{playPost.timeOfCreation | date : 'short'}}</h6>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
   <div class="page-side">
-    <div class="button">
-      <div class="text-center"*ngIf="!createpost">
-        <button type="button" (click)="createPostToggle()" class="btn btn-outline-secondary" style="margin: 0 auto;">Create post</button>
+    <div class="side-component" *ngIf="this.userService.role != 'admin'">
+      <div class="text-center" *ngIf="!createpost">
+        <button type="button" (click)="this.createpost = true" class="btn btn-outline-secondary" style="margin: 0 auto;">Create post</button>
       </div>
       <div *ngIf="createpost">
         <app-create-post (cancelCreate)="cancelCreatePost($event)"></app-create-post>

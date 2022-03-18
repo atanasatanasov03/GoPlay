@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Certificate;
 using API.Extensions;
 using GoPlayServer.Interfaces;
 using GoPlayServer.Hubs;
+using GoPlayServer.Helpers;
 
 namespace GoPlayServer
 {
@@ -33,23 +34,8 @@ namespace GoPlayServer
                         .SetIsOriginAllowed(_ => true)
                         .AllowAnyMethod());
             });
+
             services.AddIdentityServices(Configuration);
-
-
-
-
-            // services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //     .AddJwtBearer(options =>
-            //     {
-            //         options.TokenValidationParameters = new TokenValidationParameters
-            //         {
-            //             ValidateIssuerSigningKey=true,Hibs
-            //             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("dasdaadsadasd2131312deni")),
-            //             ValidateIssuer = false,
-            //             ValidateAudience = false
-            //         };
-            //     });
-
 
             services.AddDbContext<AppDbContext>(options =>
             {
@@ -69,9 +55,9 @@ namespace GoPlayServer
 
             app.UseRouting();
             app.UseCors("CorsPolicy");
+            app.UseMiddleware<JwtMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

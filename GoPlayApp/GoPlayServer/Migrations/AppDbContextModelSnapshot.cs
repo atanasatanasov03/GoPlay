@@ -45,6 +45,9 @@ namespace GoPlayServer.Migrations
                     b.Property<int?>("age")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("banned")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("email")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -53,6 +56,12 @@ namespace GoPlayServer.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("lastName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("mutedFor")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("mutedOn")
                         .HasColumnType("TEXT");
 
                     b.Property<byte[]>("passwordHash")
@@ -182,6 +191,30 @@ namespace GoPlayServer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PlayPosts");
+                });
+
+            modelBuilder.Entity("GoPlayServer.Entities.ReportedPost", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("reason")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("reportedPostId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("reporterId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ReportedPosts");
                 });
 
             modelBuilder.Entity("AppUserGroup", b =>

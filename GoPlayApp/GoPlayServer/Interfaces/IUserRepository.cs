@@ -1,4 +1,5 @@
-﻿using GoPlayServer.Entities;
+﻿using GoPlayServer.DTOs;
+using GoPlayServer.Entities;
 
 namespace GoPlayServer.Interfaces
 {
@@ -12,5 +13,7 @@ namespace GoPlayServer.Interfaces
         Task<AppUser> GetUserByIdAsync(Guid id);
         Task<AppUser> GetUserByUsernameAsync(string username);
         string GetUsernameByTokenAsync(string token);
+        string GenerateJwtToken(AppUser user);
+        Task<AppUserDTO> Authenticate(LoginDTO loginDto);
     }
 }

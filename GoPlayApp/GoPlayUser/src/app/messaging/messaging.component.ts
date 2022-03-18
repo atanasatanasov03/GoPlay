@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageServiceService } from '../services/message-service.service';
 import { UserServiceService } from '../services/user.service';
@@ -9,25 +9,34 @@ import { UserServiceService } from '../services/user.service';
   styleUrls: ['./messaging.component.css']
 })
 export class MessagingComponent implements OnInit {
+  container: HTMLElement;
+
   title = 'chat-ui';
   text: string = "";
-  groupName: string;
   joinedGroup: boolean = false;
 
   constructor(public messageService: MessageServiceService, public userService: UserServiceService, public router: Router) { }
 
   ngOnInit(): void {
     if (!this.userService.isLogged()) this.router.navigate([""])
-    this.messageService.connect();
   }
 
-  joinGroup() {
-    this.messageService.joinGroup(this.groupName);
-    this.joinedGroup = true;
+  ngAfterViewInit() {
+    this.container = document.getElementById("chat");
+    this.container.scrollTop = this.container.scrollHeight;
+  }
+
+  openChat(group: string) {
+    this.messageService.groupName = group;
+    this.messageService.joinGroup();
+  }
+
+  leaveGroup() {
+    this.messageService.leaveGroup();
   }
 
   sendMessage(): void {
-    this.messageService.sendMessageToGroup(this.groupName, this.text).subscribe(_ => {
+    this.messageService.sendMessageToGroup(this.text).subscribe(_ => {
       this.text = '';
       console.log("group message recieved in component")
     });

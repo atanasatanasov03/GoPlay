@@ -1,29 +1,61 @@
-<br /><br />
+<br />
+<br />
+<br />
 
-<div class="container mt-5">
-  <div *ngIf="!this.joinedGroup">
-    <h1>Basic SignalR</h1>
-    <input type="text" class="mt-3 mb-3 mr-3" [(ngModel)]="groupName">
-    <button class="btn btn-primary" (click)="joinGroup()">Join Group</button>
-  </div>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 
-  <div *ngIf="this.joinedGroup">
-    <h1>{{this.groupName}}</h1>
-    <input type="text" id="text" class="mt-3 mb-3 mr-3" [(ngModel)]="text">
+<div class="container">
+  <div class="row clearfix">
+    <div class="col-lg-12">
+      <div class="card chat-app">
+        <div class="chat">
+          <div class="chat-header clearfix">
+            <div class="row">
+              <div class="col-lg-6" style="display:flex;align-items:center;">
+                 <h6 style="margin-bottom: 0%">{{this.messageService.groupName}}</h6>
+              </div>
+              <div class="col-lg-6">
+                <button type="button" *ngIf="messageService.groupName != undefined" style="float: right"
+                        (click)="leaveGroup()" class="btn btn-danger">Leave Group</button>
+              </div>
+            </div>
+          </div>
+          <div id="plist" class="people-list">
+            <ul class="list-unstyled chat-list mt-2 mb-0" *ngFor="let group of messageService.groups">
+              <li class="clearfix" (click)="openChat(group)">
+                <div class="about">
+                  <div class="name">{{group}}</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div id="chat" class="chat-history" style="overflow-y: scroll; height: 550px">
+            <ul class="m-b-0" *ngFor="let m of messageService.messages">
+              <li class="clearfix" *ngIf="m.username == this.userService.username">
+                <div class="message-data text-right">
+                  <div class="message-data-time">{{m.dateTime | date : 'short'}}</div>
+                </div>
+                <div class="message other-message float-right">{{m.text}}</div>
+              </li>
 
-    <button class="btn btn-primary" [disabled]="text.length==0" onclick="document.getElementById('text').value = ''" (click)="sendMessage()">Send Message</button>
-    <h4 class="mb-3">List of Messages</h4>
-
-    <div *ngIf="messageService.messages.length==0">
-      <p>You haven't send or received messages</p>
-    </div>
-    <div *ngFor="let m of messageService.messages">
-      <div class="mb-2 mt-2">
-        <div><strong>{{m.username}} : {{m.text}}</strong></div>
-        <sup>{{m.dateTime | date : 'short'}}</sup>
-        <hr>
+              <li class="clearfix" *ngIf="m.username != this.userService.username">
+                <div class="message-data">
+                  <span class="message-data-time">{{m.username}} at {{m.dateTime | date : 'short'}}</span>
+                </div>
+                <div class="message my-message">{{m.text}}</div>
+              </li>
+            </ul>
+          </div>
+          <div class="chat-message clearfix">
+            <div class="input-group mb-0">
+              <div class="input-group-prepend">
+                <button class="btn btn-primary" [disabled]="text.length==0" onclick="document.getElementById('text').value = ''" (click)="sendMessage()">Send Message</button>
+              </div>
+              <input type="text" class="form-control" placeholder="Enter text here..." [(ngModel)]="text">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  
 </div>

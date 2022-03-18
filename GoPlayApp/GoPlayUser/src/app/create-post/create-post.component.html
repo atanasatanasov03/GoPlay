@@ -1,16 +1,41 @@
-<div style="">
-  <form #registerForm="ngForm" (ngSubmit)="createPost()" autocomplete="off" method="post" id="registerForm">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/angular-bootstrap-toggle@0.4.2/dist/angular-bootstrap-toggle.min.css">
+<script src="https://cdn.jsdelivr.net/npm/angular-bootstrap-toggle@0.4.2/dist/angular-bootstrap-toggle.min.js"></script>
+
+<div class="card" *ngIf="!this.userService.muted">
+  <div class="card-header d-flex justify-content-center align-items-center" style="background-color: #f2f2f2">
+    <div style="width: 100%; display: flex; align-items: center; justify-content: center;" *ngIf="this.userService.role == 'regular'">
+      <h5 style="margin-bottom: 0%">CREATE PLAY POST</h5>
+    </div>
+    <div *ngIf="this.userService.role == 'center'">
+      <ng-toggle onColor="success"
+                 onText="Create PlayPost"
+                 offColor="warning"
+                 offText="Create NewsPost"
+                 [disabled]="false"
+                 [size]=""
+                 [(ngModel)]="this.playPost">
+      </ng-toggle>
+    </div>
+  </div>
+
+  <form style="margin: 6% 4%" (ngSubmit)="createPost()" autocomplete="off">
 
     <input class="form-control form-control-lg" name="heading" [(ngModel)]="model.heading" type="text" placeholder="heading">
 
-    <textarea class="form-control" id="exampleFormControlTextarea1" name="content" [(ngModel)]="model.content" rows="3" placeholder="content"></textarea>
+    <textarea style="margin-top: 5%" class="form-control" name="content" [(ngModel)]="model.content" rows="3" placeholder="content"></textarea>
 
-    <input class="form-control form-control-sm" type="text" name="address" [(ngModel)]="model.address" placeholder="address">
+    <input style="margin-top: 5%" class="form-control form-control-sm" type="text" name="address" [(ngModel)]="model.address" placeholder="address">
 
-    <div class="d-flex flex-row justify-content-center mx-4 mb-3 mb-lg-4">
+
+    <input *ngIf="!this.playPost" type="file" (change)="upload($event)" accept="*.png.jpg">
+
+    <div style="margin-top: 5%" class="d-flex flex-row justify-content-center">
       <button type="submit" value="" class="btn btn-primary btn-lg mr-5">Create post</button>
       <button type="button" (click)="cancel()" class="btn btn-outline-primary">Cancel</button>
     </div>
-
   </form>
+</div>
+
+<div *ngIf="this.userService.muted">
+  YOU HAVE BEEN VERY NAUGHTY AND FOR THAT YOU HAVE BEEN PUNISHED
 </div>
