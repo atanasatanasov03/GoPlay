@@ -14,25 +14,74 @@
                    offText="Admin"
                    [disabled]="false"
                    [size]=""
-                   [(ngModel)]="this.adminhome">
+                   [(ngModel)]="this.homeOrAdmin">
         </ng-toggle>
       </div>
     </div>
 
-    <div *ngIf="this.loaded && this.adminhome">
-      <div *ngFor="let playPost of this.postService.PlayPosts; let i = index">
-        <div class="card" style="width: 100%; margin-top: 20px; margin-bottom: 20px">
+    <div *ngIf="this.postService.loadedHome && this.homeOrAdmin">
+      <div *ngFor="let post of this.postService.Posts">
+        <div *ngIf="post.play" class="card" style="width: 100%; margin-top: 20px; margin-bottom: 20px">
+          <div class="card-header d-flex aligns-items-center justify-content-between" style="margin-bottom: 10px">
+            <h5 class="card-title" style="display:inline-block; margin-top:6px; margin-bottom:6px">{{post.heading}}</h5>
+            <button type="button" (click)="reportPost(post)" class="btn btn-primary btn-sm" style="margin-top:6px; margin-bottom: 6px">Report</button>
+          </div>
           <div class="card-body">
-            <div class="d-flex aligns-items-center justify-content-between" style="margin-bottom: 10px">
-              <h5 class="card-title" style="display:inline-block">{{playPost.heading}}</h5>
-              <button type="button" (click)="reportPost(playPost)" class="btn btn-primary btn-sm">Report</button>
-            </div>
-            <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block">Posted by: {{playPost.userName}}</h6>
-            <p class="card-text">{{playPost.content}}</p>
-            <p class="card-text">Address: {{playPost.address}}</p>
+            <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block">Posted by: {{post.userName}}</h6>
+            <p class="card-text">{{post.content}}</p>
+            <p class="card-text">Address: {{post.address}}</p>
             <div class="d-flex aligns-items-center justify-content-between">
-              <a class="card-link" style="cursor: pointer;" (click)="sendToGroup(playPost)">Send to Group</a>
-              <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block"> {{playPost.timeOfCreation | date : 'short'}}</h6>
+              <a class="card-link" style="cursor: pointer;" (click)="sendToGroup(post)">Send to Group</a>
+              <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block"> {{post.timeOfCreation | date : 'short'}}</h6>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!post.play">
+          <div class="card" style="width: 100%; margin-top: 20px; margin-bottom: 20px">
+            <img class="card-img-top" src={{post.pictureUrl}}>
+            <div class="card-body">
+              <h5 class="card-title">{{post.heading}}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">Posted by: {{post.userName}}</h6>
+              <p class="card-text">{{post.content}}</p>
+              <h6 class="card-subtitle mb-2 text-muted" style="float: right"> {{post.timeOfCreation | date : 'short'}}</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="this.postService.loadedAdmin && !this.homeOrAdmin">
+      <h6 class="mt-3" style="text-align:center; font-size: large" *ngIf="this.postService.Reported.length==0">THERE ARE NO REPORTED POSTS</h6>
+      <div *ngFor="let report of this.postService.Reported">
+        <div class="card" style="width: 100%; margin-top: 20px; margin-bottom: 20px">
+          <div class="card-header">
+            <h5 class="card-title" style="display:inline-block; margin-top: 6px; margin-bottom: 6px;">{{report.reportedPost.heading}}</h5>
+          </div>
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block">Posted by: {{report.reportedPost.userName}}</h6>
+            <p class="card-text">{{report.reportedPost.content}}</p>
+            <p class="card-text">Address: {{report.reportedPost.address}}</p>
+            <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block"> {{report.reportedPost.timeOfCreation | date : 'short'}}</h6>
+          </div>
+          <div class="card-footer">
+            <div class="row mb-3 mt-2 d-flex justify-content-center" style="width: 100%; text-align:center">
+            Reported by {{report.reporter}}; the reason being: {{report.reason}}
+            </div>
+            <div class="row d-flex justify-content-around">
+              <div class="col" align="center">
+                <button type="button" class="btn btn-success" (click)="innocent(report)">User is innocent</button>
+              </div>
+              <div class="col" align="center">
+                <button type="button" class="btn btn-warning row mb-2"
+                        [disabled]="model.period<1 || model.period>21" (click)="mute(report)">Mute User</button>
+                <input class="row" type="number" name="period" min="1" max="21" [(ngModel)]="model.period">
+              </div>
+              <div class="col" align="center">
+                <button type="button" class="btn btn-danger row mb-2 " [disabled]="!model.ban" (click)="ban(report)">Ban User</button>
+                <div class="form-check row">
+                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" [(ngModel)]="model.ban">
+                  <label class="form-check-label" for="flexCheckDefault">Ban user?</label>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -41,10 +90,10 @@
   </main>
   <div class="page-side">
     <div class="side-component" *ngIf="this.userService.role != 'admin'">
-      <div class="text-center" *ngIf="!createpost">
-        <button type="button" (click)="this.createpost = true" class="btn btn-outline-secondary" style="margin: 0 auto;">Create post</button>
+      <div class="text-center" *ngIf="!createPost">
+        <button type="button" (click)="this.createPost = !this.createPost" class="btn btn-outline-secondary" style="margin: 0 auto;">Create post</button>
       </div>
-      <div *ngIf="createpost">
+      <div *ngIf="createPost">
         <app-create-post (cancelCreate)="cancelCreatePost($event)"></app-create-post>
       </div>
     </div>

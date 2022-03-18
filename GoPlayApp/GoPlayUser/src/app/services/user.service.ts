@@ -86,4 +86,11 @@ export class UserServiceService {
     return user == null ? null : user;
   }
 
+  muteUser(username: string, period: number) {
+    this.http.post(this.accUrl + '/muteUser?username=' + username + '&period=' + period, "").subscribe(_ => console.log("done"));
+  }
+
+  banUser(username: string) {
+    this.http.post(this.accUrl + '/banUser?username=' + username, "").subscribe(_ => console.log("done"));
+  }
 }

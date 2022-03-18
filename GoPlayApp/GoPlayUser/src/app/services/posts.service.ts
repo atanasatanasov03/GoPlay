@@ -2,9 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { NewsPost } from '../models/NewsPost';
-import { PlayPost } from '../models/PlayPost';
-import { ReportedPost } from '../models/ReportedPost';
+import { Post } from '../models/Post';
+import { Report } from '../models/Report';
+import { Reported } from '../models/Reported';
 import { UserServiceService } from './user.service';
 
 @Injectable({
@@ -12,59 +12,43 @@ import { UserServiceService } from './user.service';
 })
 export class PostsService {
   postUrl = "https://localhost:7170/posts"
-  public PlayPosts: PlayPost[] = [];
-  public NewsPosts: NewsPost[] = [];
-  public ReportedPosts: PlayPost[] = [];
-  public AllPosts: (PlayPost | NewsPost)[] = [];
+  public loadedHome: boolean = false;
+  public loadedAdmin: boolean = false;
+  public Posts: Post[] = [];
+  public Reported: Reported[] = [];
 
   constructor(private http: HttpClient, private userService: UserServiceService) { }
 
-  createPlayPost(model: any) {
-    return this.http.post<PlayPost>(this.postUrl + '/createPlay', model).pipe(
-      map((response: PlayPost) => { this.PlayPosts.push(response) })
+  createPost(model: any) {
+    console.log("yo")
+    return this.http.post<Post>(this.postUrl + '/createPost', model).pipe(
+      map((response: Post) => { this.Posts.push(response) })
     );
    }
 
-  createNewsPost(model: any) {
-    return this.http.post<NewsPost>(this.postUrl + '/createNews', model).pipe(
-      map((response: NewsPost) => { this.NewsPosts.push(response) })
-    );
-  }
-
-  getAllPlayPosts() {
-    this.http.get<PlayPost[]>(this.postUrl + '/getAllPlay').subscribe(res => this.PlayPosts = res);
-  }
-
-  getAllNewsPosts() {
-    this.http.get<NewsPost[]>(this.postUrl + '/getAllNews').subscribe(res => this.NewsPosts = res);
+  getAllPosts() {
+    this.http.get<Post[]>(this.postUrl + '/getAll').subscribe(res => { this.Posts = res; this.loadedHome = true;});
   }
 
   getReportedPosts() {
-    this.http.get<PlayPost[]>(this.postUrl + '/reported').subscribe(res => this.ReportedPosts = res);
+    this.http.get<Reported[]>(this.postUrl + '/reported').subscribe(res => { this.Reported = res; this.loadedAdmin = true; });
   }
 
-  reportPost(post: PlayPost, reason: string) {
+  reportPost(post: Post, reason: string) {
     return this.http.post(this.postUrl + '/report', this.buildReport(post, reason));
   }
 
-  buildReport(playPost: PlayPost, reason: string): ReportedPost {
+  buildReport(post: Post, reason: string): Report {
     return {
-      postId: playPost.id,
+      postId: post.postId,
       username: this.userService.username,
       reason: reason
     }
   }
 
-  getPosts() {
-    for (let i = 0, ppi = 0, npi = 0; i < (this.PlayPosts.length + this.NewsPosts.length); i++) {
-      if (i % 5 != 0) {
-        this.AllPosts.push(this.PlayPosts[ppi]);
-        ppi++;
-      }
-      else {
-        this.AllPosts.push(this.NewsPosts[npi]);
-        npi++;
-      }
-    }
+  resolveReport(report: Reported) {
+    this.Reported.splice(this.Reported.indexOf(report), 1);
+    if (report.toBeRemoved) this.Posts.splice(this.Posts.indexOf(report.reportedPost), 1);
+    return this.http.post(this.postUrl + '/resolveReport', report).subscribe(_ => console.log("done"));
   }
 }

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { PlayPost } from '../models/PlayPost';
+import { Post } from '../models/Post';
 import { NotificationService } from '../services/notification.service';
 import { PostsService } from '../services/posts.service';
 
@@ -9,7 +9,7 @@ import { PostsService } from '../services/posts.service';
   styleUrls: ['./report.component.css']
 })
 export class ReportComponent implements OnInit {
-  @Input() postToReport: PlayPost;
+  @Input() postToReport: Post;
   @Output() cancelEvent = new EventEmitter<boolean>();
   model: any = {};
 

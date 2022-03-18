@@ -27,7 +27,7 @@ namespace GoPlayServer.Hubs
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, groupname);
             
-            var group = await _groupRepo.GetGroupByName(groupname);
+            var group = await _groupRepo.GetGroupByNameAsync(groupname);
             var user = await _userRepo.GetUserByUsernameAsync(username);
 
             IQueryable<AppUser> usersInGroup = await _groupRepo.GetUsersInGroup(groupname);

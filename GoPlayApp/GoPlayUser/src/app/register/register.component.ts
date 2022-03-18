@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NotificationService } from '../services/notification.service';
 import { UserServiceService } from '../services/user.service';
@@ -10,7 +11,7 @@ import { UserServiceService } from '../services/user.service';
 })
 
 export class RegisterComponent implements OnInit {
-
+  reactiveForm: FormGroup;
   @Input() usersFromHomeComponent: any;
   @Output() cancelRegister = new EventEmitter();
   model: any = {};
@@ -18,11 +19,15 @@ export class RegisterComponent implements OnInit {
 
   constructor(private userService: UserServiceService,
     private notificationService: NotificationService,
-    private router: Router) {
+    private router: Router,
+    private builder: FormBuilder) {
     this.logged = userService.isLogged;
   }
 
   ngOnInit(): void {
+    this.reactiveForm = this.builder.group({
+      email: [null, Validators.required]
+    });
   }
 
   register() {

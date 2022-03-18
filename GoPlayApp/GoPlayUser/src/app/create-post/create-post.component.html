@@ -24,10 +24,9 @@
 
     <textarea style="margin-top: 5%" class="form-control" name="content" [(ngModel)]="model.content" rows="3" placeholder="content"></textarea>
 
-    <input style="margin-top: 5%" class="form-control form-control-sm" type="text" name="address" [(ngModel)]="model.address" placeholder="address">
+    <input *ngIf="this.playPost" style="margin-top: 5%" class="form-control form-control-sm" type="text" name="address" [(ngModel)]="model.address" placeholder="address">
 
-
-    <input *ngIf="!this.playPost" type="file" (change)="upload($event)" accept="*.png.jpg">
+    <input *ngIf="!this.playPost" type="file"  accept="*.png.jpg">
 
     <div style="margin-top: 5%" class="d-flex flex-row justify-content-center">
       <button type="submit" value="" class="btn btn-primary btn-lg mr-5">Create post</button>

@@ -4,9 +4,10 @@ namespace GoPlayServer.DTOs
 {
     public class ReportedPostDTO
     {
-        public PlayPost reportedPost { get; set; }
+        public PostDTO reportedPost { get; set; }
         public DateTime timestamp { get; set; }
-        public AppUser reporter { get; set; }
+        public string reporter { get; set; }
         public string reason { get; set; }
+        public bool? toBeRemoved { get; set; }
     }
 }

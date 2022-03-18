@@ -9,8 +9,7 @@ namespace GoPlayServer.Data
         public AppDbContext( DbContextOptions options ) : base(options) {}
 
         public DbSet<AppUser> AppUsers { get; set; }
-        public DbSet<PlayPost> PlayPosts { get; set; }
-        public DbSet<NewsPost> NewsPosts { get; set; }
+        public DbSet<Post> Posts { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Message> Message { get; set; }
         public DbSet<ReportedPost> ReportedPosts { get; set; }

@@ -13,35 +13,44 @@ namespace GoPlayServer.Data
             _context = context;
         }
 
-        public void AddNewsPost(NewsPost newsPost) => _context.NewsPosts.Add(newsPost);
-
-        public void AddPlayPost(PlayPost playPost) => _context.PlayPosts.Add(playPost);
-
-        public void ReportPost(ReportedPost reported) => _context.ReportedPosts.Add(reported);
-
-        public async Task<IEnumerable<NewsPost>> GetNewsPostsAsync()
+        public async Task AddPostAsync(Post post)
         {
-            return await _context.NewsPosts.ToListAsync();
+            await _context.Posts.AddAsync(post);
+        } 
+
+        public async Task<IEnumerable<Post>> GetPlayPostsAsync()
+        {
+            return await _context.Posts.Where(p => p.play == true).ToListAsync();
         }
 
-        public async Task<IEnumerable<NewsPost>> GetNewsPostsByUserIdAsync(Guid id)
+        public async Task<IEnumerable<Post>> GetNewsPostsAsync()
         {
-            return await _context.NewsPosts.Where(p => p.userId == id).ToListAsync();
+            return await _context.Posts.Where(p => p.play == false).ToListAsync();
         }
 
-        public async Task<IEnumerable<PlayPost>> GetPlayPostsAsync()
+        public async Task<IEnumerable<Post>> GetPostsByUserIdAsync(Guid id)
         {
-            return await _context.PlayPosts.ToListAsync();
+            return await _context.Posts.Where(p => p.userId == id).ToListAsync();
         }
 
-        public async Task<IEnumerable<PlayPost>> GetPlayPostsByUserIdAsync(Guid id)
+        public async Task ReportPostAsync(ReportedPost reported)
         {
-            return await _context.PlayPosts.Where(p => p.userId == id).ToListAsync();
+            await _context.ReportedPosts.AddAsync(reported);
         }
 
-        public async Task<IEnumerable<ReportedPost>> GetReportedPosts()
+        public async Task<IEnumerable<ReportedPost>> GetReportedPostsAsync()
         {
             return await _context.ReportedPosts.ToListAsync();
+        }
+
+        public void ResolveReport(ReportedPost reportedPost)
+        {
+            _context.ReportedPosts.Remove(reportedPost);
+        }
+
+        public void RemovePost(Post post)
+        {
+            _context.Posts.Remove(post);
         }
     }
 }

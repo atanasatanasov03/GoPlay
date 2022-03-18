@@ -27,219 +27,243 @@ namespace GoPlayServer.Controllers
             _groupRepo = groupRepo;
         }
 
-        [HttpPost("createPlay")]
-        public async Task<ActionResult<PlayPostDTO>> createPlayPost(NewPlayPostDTO newPlayPostDTO)
+        [HttpPost("createPost")]
+        public async Task<ActionResult<PostDTO>> createPlayPost(NewPostDTO newPostDTO)
         {
-            if (!await UserExists(newPlayPostDTO.userName)) return new BadRequestResult();
+            if (!await UserExists(newPostDTO.userName)) return new BadRequestResult();
 
-            var user = await _userRepo.GetUserByUsernameAsync(newPlayPostDTO.userName);
+            var user = await _userRepo.GetUserByUsernameAsync(newPostDTO.userName);
 
             if (user == null) return new BadRequestResult();
-
-            var group = new Group
-            {
-                groupName = string.Concat(newPlayPostDTO.content.Substring(0, 5), newPlayPostDTO.heading.Substring(0, 5)),
-                users = new List<AppUser>()
-            };
-            group.users.Add(user);
             if (user.groups == null) user.groups = new List<Group>();
-            user.groups.Add(group);
-            
-            var playPost = new PlayPost
-            {
-                userId = user.Id,
-                heading = newPlayPostDTO.heading,
-                content = newPlayPostDTO.content,
-                address = newPlayPostDTO.address,
-                groupName = group.groupName,
-                timeOfCreation = DateTime.Now
-            };
 
-            _postRepo.AddPlayPost(playPost);
-            _groupRepo.AddGroup(group);
-            _userRepo.Update(user);
-            
+            Post post;
+            string groupname = null;
+
+            if (newPostDTO.play)
+            {
+                var groupToAdd = new Group{
+                    groupName = newPostDTO.userName + "'s group for " + newPostDTO.heading,
+                    users = new List<AppUser>()
+                };
+                groupToAdd.users.Add(user);
+                user.groups.Add(groupToAdd);
+                
+                await _groupRepo.AddGroupAsync(groupToAdd);
+                _userRepo.Update(user);
+                await _context.SaveChangesAsync();
+
+                groupname = groupToAdd.groupName;
+                post = new Post
+                {
+                    userId = user.Id,
+                    heading = newPostDTO.heading,
+                    content = newPostDTO.content,
+                    timeOfCreation = DateTime.Now,
+                    play = newPostDTO.play,
+
+                    address = newPostDTO.address
+                };
+            } else
+            {
+                post = new Post
+                {
+                    userId = user.Id,
+                    heading = newPostDTO.heading,
+                    content = newPostDTO.content,
+                    timeOfCreation = DateTime.Now,
+                    play = newPostDTO.play,
+
+                    pictureUrl = newPostDTO.pictureUrl
+                };
+            }
+
+            if (newPostDTO.play)
+            {
+                Group group = await _groupRepo.GetGroupByNameAsync(groupname);
+                post.groupId = group.Id;
+            }
+            await _postRepo.AddPostAsync(post);
             await _context.SaveChangesAsync();
 
-            return new PlayPostDTO
+            return new PostDTO
             {
                 userName = user.userName,
-                heading = playPost.heading,
-                content = playPost.content,
-                address = playPost.address,
-                groupName = playPost.groupName,
-                timeOfCreation = playPost.timeOfCreation
+                heading = post.heading,
+                content = post.content,
+                timeOfCreation = post.timeOfCreation,
+                play = post.play,
+
+                address = post.address,
+                groupName = groupname,
+                pictureUrl = post.pictureUrl
             };
         }
 
-        [HttpPost("createNews")]
-        public async Task<ActionResult<NewsPostDTO>> createNewsPost(NewNewsPostDTO newNewsPostDTO)
-        {
-            if (!await UserExists(newNewsPostDTO.userName)) return new BadRequestResult();
-
-            var user = await _userRepo.GetUserByUsernameAsync(newNewsPostDTO.userName);
-            if (user.role != "center") return new ForbidResult();
-
-            var newsPost = new NewsPost
-            {
-                userId = user.Id,
-                heading = newNewsPostDTO.heading,
-                content = newNewsPostDTO.content,
-                pictureUrl = newNewsPostDTO.pictureUrl,
-                timeOfCreation = DateTime.Now
-            };
-
-            _postRepo.AddNewsPost(newsPost);
-            await _context.SaveChangesAsync();
-
-            return new NewsPostDTO
-            {
-                id = newsPost.Id,
-                userName = user.userName,
-                heading = newsPost.heading,
-                content = newsPost.content,
-                pictureUrl = newsPost.pictureUrl,
-                timeOfCreation = newsPost.timeOfCreation
-            };
-        }
-
-        [HttpGet("getAllPlay")]
-        public async Task<ActionResult<List<PlayPostDTO>>> getAllPlayPosts()
+        [HttpGet("getAll")]
+        public async Task<ActionResult<List<PostDTO>>> getAllPosts()
         {
             var playPosts = await _postRepo.GetPlayPostsAsync();
-            var playPostsDTOs = new List<PlayPostDTO>();
-
-            foreach(var playPost in playPosts)
-            {
-                var user = await _userRepo.GetUserByIdAsync(playPost.userId);
-                playPostsDTOs.Add(new PlayPostDTO{
-                    Id = playPost.Id,
-                    userName = user.userName,
-                    heading = playPost.heading,
-                    content = playPost.content,
-                    address = playPost.address,
-                    groupName = playPost.groupName,
-                    timeOfCreation = playPost.timeOfCreation
-                });
-            }
-
-            return Ok(playPostsDTOs);
-        }
-
-        [HttpGet("getAllNews")]
-        public async Task<ActionResult<List<NewsPostDTO>>> getAllNewsPosts()
-        {
             var newsPosts = await _postRepo.GetNewsPostsAsync();
-            var newsPostsDTOs = new List<NewsPostDTO>();
+            var postDTOs = new List<PostDTO>();
 
-            foreach (var newsPost in newsPosts)
+            AppUser user;
+
+            for(int i = 0, j = 0; i < playPosts.Count(); i++)
             {
-                var user = await _userRepo.GetUserByIdAsync(newsPost.userId);
-                newsPostsDTOs.Add(new NewsPostDTO
+                var group = await _groupRepo.GetGroupByIdAsync(playPosts.ElementAt(i).groupId);
+                user = await _userRepo.GetUserByIdAsync(playPosts.ElementAt(i).userId);
+
+                postDTOs.Add(new PostDTO
                 {
-                    id = newsPost.Id,
+                    postId = playPosts.ElementAt(i).Id,
                     userName = user.userName,
-                    heading = newsPost.heading,
-                    content = newsPost.content,
-                    pictureUrl = newsPost.pictureUrl,
-                    timeOfCreation = newsPost.timeOfCreation
+                    heading = playPosts.ElementAt(i).heading,
+                    content = playPosts.ElementAt(i).content,
+                    timeOfCreation = playPosts.ElementAt(i).timeOfCreation,
+                    play = playPosts.ElementAt(i).play,
+
+                    address = playPosts.ElementAt(i).address,
+                    groupName = group.groupName
                 });
+
+                if ((i + 1) % 5 == 0 || (i+1) == playPosts.Count())
+                {
+                    user = await _userRepo.GetUserByIdAsync(newsPosts.ElementAt(j).userId);
+                    postDTOs.Add(new PostDTO
+                    {
+                        postId = newsPosts.ElementAt(j).Id,
+                        userName = user.userName,
+                        heading = newsPosts.ElementAt(j).heading,
+                        content = newsPosts.ElementAt(j).content,
+                        timeOfCreation = newsPosts.ElementAt(j).timeOfCreation,
+                        play = newsPosts.ElementAt(j).play,
+
+                        pictureUrl = newsPosts.ElementAt(j).pictureUrl
+                    });
+                    j++;
+                }
             }
 
-            return Ok(newsPostsDTOs);
+            return Ok(postDTOs);
         }
 
-        [HttpGet("getPlayPostsFor")]
-        public async Task<ActionResult<List<PlayPost>>> getPlayPostsFor(string username)
+        [HttpGet("getPostsFor")]
+        public async Task<ActionResult<List<Post>>> getPostsFor(string username)
         {
             var user = await _userRepo.GetUserByUsernameAsync(username);
             if (user == null) return new BadRequestResult();
 
-            var playPosts = await _postRepo.GetPlayPostsByUserIdAsync(user.Id);
-            if (playPosts == null) return NotFound();
+            var posts = await _postRepo.GetPostsByUserIdAsync(user.Id);
+            if (posts == null) return NotFound();
+            posts.OrderBy(post => post.timeOfCreation);
 
-            var playPostsDTOs = new List<PlayPostDTO>();
+            var postDTOs = new List<PostDTO>();
 
-            foreach (var playPost in playPosts)
+            foreach (var post in posts)
             {
-                playPostsDTOs.Add(new PlayPostDTO
-                {
-                    userName = username,
-                    heading = playPost.heading,
-                    content = playPost.content,
-                    address = playPost.address,
-                    timeOfCreation = playPost.timeOfCreation
-                });
+                postDTOs.Add(await BuildPostDTO(post));
             }
 
-            return Ok(playPostsDTOs);
-        }
-
-        [HttpGet("getNewsPostsFor")]
-        public async Task<ActionResult<List<PlayPost>>> getNewsPostsFor(string username)
-        {
-            var user = await _userRepo.GetUserByUsernameAsync(username);
-            if (user == null || user.role != "center") return new BadRequestResult();
-
-            var newsPosts = await _postRepo.GetNewsPostsByUserIdAsync(user.Id);
-            if (newsPosts == null) return NotFound();
-
-            var newsPostsDTOs = new List<NewsPostDTO>();
-            foreach (var newsPost in newsPosts)
-            {
-                newsPostsDTOs.Add(new NewsPostDTO
-                {
-                    userName = username,
-                    heading = newsPost.heading,
-                    content = newsPost.content,
-                    pictureUrl = newsPost.pictureUrl,
-                    timeOfCreation = newsPost.timeOfCreation
-                });
-            }
-
-            return Ok(newsPostsDTOs);
+            return Ok(postDTOs);
         }
 
         [HttpPost("report")]
-        public async Task<ActionResult> ReportPost(ReportPostDTO reportdto)
+        public async Task<ActionResult> ReportPost(ReportPostDTO reportDTO)
         {
-            var user = await _userRepo.GetUserByUsernameAsync(reportdto.username);
+            var user = await _userRepo.GetUserByUsernameAsync(reportDTO.username);
             if (user == null) return new BadRequestResult();
-
+            
             var report = new ReportedPost
             {
-                reportedPostId = reportdto.postId,
+                reportedPostId = reportDTO.postId,
                 timestamp = DateTime.Now,
                 reporterId = user.Id,
-                reason = reportdto.reason
+                reason = reportDTO.reason
             };
 
-            _postRepo.ReportPost(report);
+            await _postRepo.ReportPostAsync(report);
             await _context.SaveChangesAsync();
 
             return Ok();
         }
 
         [HttpGet("reported")]
-        public async Task<ActionResult<List<ReportedPost>>> GetReportedPosts()
+        public async Task<ActionResult<List<ReportedPostDTO>>> GetReportedPosts()
         {
-            var reportedPosts = await _postRepo.GetReportedPosts();
-            var reportedPostsDTOs = new List<ReportedPostDTO>();
+            var reports = await _postRepo.GetReportedPostsAsync();
+            var reportedPostDTOs = new List<ReportedPostDTO>();
 
-            foreach(var post in reportedPosts)
+            foreach(var report in reports)
             {
-                var playPost = await _context.PlayPosts.SingleOrDefaultAsync(p => p.Id == post.reportedPostId);
-                var user = await _context.AppUsers.SingleOrDefaultAsync(u => u.Id == post.reporterId);
-                reportedPostsDTOs.Add(new ReportedPostDTO
+                var post = await _context.Posts.SingleOrDefaultAsync(p => p.Id == report.reportedPostId);
+                var user = await _context.AppUsers.SingleOrDefaultAsync(u => u.Id == report.reporterId);
+                reportedPostDTOs.Add(new ReportedPostDTO
                 {
-                    reportedPost = playPost,
-                    timestamp = post.timestamp,
-                    reporter = user,
-                    reason = post.reason
+                    reportedPost = await BuildPostDTO(post),
+                    timestamp = report.timestamp,
+                    reporter = user.userName,
+                    reason = report.reason
                 });
             }
 
-            return Ok(reportedPostsDTOs);
+            return Ok(reportedPostDTOs);
+        }
+
+        [HttpPost("resolveReport")]
+        public async Task<ActionResult> ResolveReport(ReportedPostDTO reportDTO)
+        {
+            var reportedPost = await _context.ReportedPosts.SingleOrDefaultAsync(rp => rp.reportedPostId == reportDTO.reportedPost.postId);
+            if (reportedPost is null) return new BadRequestResult();
+
+            _postRepo.ResolveReport(reportedPost);
+            if(reportDTO.toBeRemoved == true)
+            {
+                var post = await _context.Posts.SingleOrDefaultAsync(p => p.Id == reportedPost.reportedPostId);
+                _postRepo.RemovePost(post);
+            } 
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        public async Task<PostDTO> BuildPostDTO(Post post)
+        {
+            PostDTO postDTO;
+
+            var user = await _userRepo.GetUserByIdAsync(post.userId);
+            if (post.play)
+            {
+                var group = await _groupRepo.GetGroupByIdAsync(post.groupId);
+                postDTO = new PostDTO
+                {
+                    postId = post.Id,
+                    userName = user.userName,
+                    heading = post.heading,
+                    content = post.content,
+                    timeOfCreation = post.timeOfCreation,
+                    play = post.play,
+
+                    address = post.address,
+                    groupName = group.groupName
+                };
+            }
+            else
+            {
+                postDTO = new PostDTO
+                {
+                    postId = post.Id,
+                    userName = user.userName,
+                    heading = post.heading,
+                    content = post.content,
+                    timeOfCreation = post.timeOfCreation,
+                    play = post.play,
+
+                    pictureUrl = post.pictureUrl
+                };
+            }
+
+            return postDTO;
         }
 
         public async Task<bool> UserExists(string userName)

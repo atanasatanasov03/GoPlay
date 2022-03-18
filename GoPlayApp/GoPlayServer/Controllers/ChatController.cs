@@ -25,13 +25,6 @@ namespace GoPlayServer.Controllers
             _groupRepo = groupRepo;
         }
 
-        /*[HttpPost("/message")]
-        public async Task SendMessage(MessageDTO message)
-        {
-            await this.hubContext.Clients.All.SendAsync("messageReceivedFromApi", message);
-        }*/
-
-
         [HttpPost("messageGroup")]
         public async Task MessageGroup(MessageDTO messageDto)
         {

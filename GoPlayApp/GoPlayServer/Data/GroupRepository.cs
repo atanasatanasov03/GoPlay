@@ -13,11 +13,18 @@ namespace GoPlayServer.Data
             _context = context;
         }
 
-        public void AddGroup(Group group) => _context.Groups.Add(group);
+        public async Task AddGroupAsync(Group group)
+        {
+            await _context.Groups.AddAsync(group);
+        }
 
-        public async Task<Group> GetGroupByName(string name)
+        public async Task<Group> GetGroupByNameAsync(string name)
         {
             return await _context.Groups.SingleOrDefaultAsync(g => g.groupName == name);
+        }
+        public async Task<Group> GetGroupByIdAsync(Guid? id)
+        {
+            return await _context.Groups.SingleOrDefaultAsync(g => g.Id == id);
         }
 
         public void UpdateGroup(Group group)
@@ -27,7 +34,7 @@ namespace GoPlayServer.Data
 
         public async Task<IQueryable<AppUser>> GetUsersInGroup(string name)
         {
-            Group groupp = await GetGroupByName(name);
+            Group groupp = await GetGroupByNameAsync(name);
 
             var usersQuery = from g in _context.Groups
                              from u in g.users
