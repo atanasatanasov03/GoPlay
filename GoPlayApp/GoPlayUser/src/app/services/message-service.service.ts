@@ -18,6 +18,8 @@ export class MessageServiceService {
   private connectionUrl = 'https://localhost:7170/message';
   private apiUrl = 'https://localhost:7170/chat';
 
+  public inGroup: boolean = false;
+
   constructor(private http: HttpClient, private userService: UserServiceService) {
     
   }
@@ -59,8 +61,10 @@ export class MessageServiceService {
   }
 
   public joinGroup() {
+    if (!this.groups.includes(this.groupName)) this.groups.push(this.groupName);
     this.getMessagesForGroup(this.groupName).subscribe((ms:Message[]) => this.messages = ms);
     this.hubConnection.invoke("AddToGroup", this.groupName, this.userService.username).catch(err => console.log(err));
+    this.inGroup = true;
   }
 
   public leaveGroup() {

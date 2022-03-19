@@ -37,7 +37,7 @@ namespace GoPlayServer.Controllers
             var message = new Message {
                 text = messageDto.text,
                 userName = messageDto.username,
-                date = messageDto.dateTime,
+                date = messageDto.dateTime.AddHours(2),
                 group = group,
                 GroupId = group.Id
             };

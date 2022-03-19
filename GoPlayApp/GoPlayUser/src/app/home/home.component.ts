@@ -38,6 +38,7 @@ export class HomeComponent implements OnInit {
 
   sendToGroup(post: Post) {
     this.messageService.groupName = post.groupName;
+    this.messageService.joinGroup();
     this.router.navigate(["/messages"])
   }
 

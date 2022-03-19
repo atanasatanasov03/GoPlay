@@ -30,26 +30,29 @@
             </ul>
           </div>
           <div id="chat" class="chat-history" style="overflow-y: scroll; height: 550px">
+            <h5 class="text-muted" *ngIf="messageService.messages.length == 0 && messageService.inGroup">There are no messages in this group</h5>
+            <h5 class="text-muted" *ngIf="!messageService.inGroup">Select a group or join one from the homepage</h5>
+
             <ul class="m-b-0" *ngFor="let m of messageService.messages">
               <li class="clearfix" *ngIf="m.username == this.userService.username">
                 <div class="message-data text-right">
                   <div class="message-data-time">{{m.dateTime | date : 'short'}}</div>
                 </div>
-                <div class="message other-message float-right">{{m.text}}</div>
+                <div class="message my-message float-right">{{m.text}}</div>
               </li>
 
               <li class="clearfix" *ngIf="m.username != this.userService.username">
                 <div class="message-data">
                   <span class="message-data-time">{{m.username}} at {{m.dateTime | date : 'short'}}</span>
                 </div>
-                <div class="message my-message">{{m.text}}</div>
+                <div class="message message">{{m.text}}</div>
               </li>
             </ul>
           </div>
           <div class="chat-message clearfix">
             <div class="input-group mb-0">
               <div class="input-group-prepend">
-                <button class="btn btn-primary" [disabled]="text.length==0" onclick="document.getElementById('text').value = ''" (click)="sendMessage()">Send Message</button>
+                <button class="btn btn-primary" [disabled]="text.length==0" (click)="sendMessage()">Send Message</button>
               </div>
               <input type="text" class="form-control" placeholder="Enter text here..." [(ngModel)]="text">
             </div>
