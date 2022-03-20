@@ -9732,11 +9732,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\School\\Дипломна работа\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj",
+      "projectUniqueName": "C:\\Users\\PC\\Desktop\\GoPlay latest working\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj",
       "projectName": "GoPlayServer",
-      "projectPath": "D:\\School\\Дипломна работа\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj",
+      "projectPath": "C:\\Users\\PC\\Desktop\\GoPlay latest working\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj",
       "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-      "outputPath": "D:\\School\\Дипломна работа\\GoPlay\\GoPlayApp\\GoPlayServer\\obj\\",
+      "outputPath": "C:\\Users\\PC\\Desktop\\GoPlay latest working\\GoPlay\\GoPlayApp\\GoPlayServer\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config",

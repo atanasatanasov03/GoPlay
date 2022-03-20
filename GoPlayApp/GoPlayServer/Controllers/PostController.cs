@@ -1,11 +1,13 @@
 ﻿using GoPlayServer.Data;
 using GoPlayServer.DTOs;
 using GoPlayServer.Entities;
+using GoPlayServer.Helpers;
 using GoPlayServer.Hubs;
 using GoPlayServer.Interfaces;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace GoPlayServer.Controllers
 {
@@ -147,6 +149,69 @@ namespace GoPlayServer.Controllers
 
             return Ok(postDTOs);
         }
+
+        [HttpGet("paged")]
+        public async Task<ActionResult<PagedList<PostDTO>>> getAllPosts([FromQuery] QueryParams pagingParameters)
+        {
+            var playPosts = await _postRepo.GetPlayPostsAsync();
+            var newsPosts = await _postRepo.GetNewsPostsAsync();
+            var postDTOs = new List<PostDTO>();
+
+            AppUser user;
+
+            for (int i = 0, j = 0; i < playPosts.Count(); i++)
+            {
+                var group = await _groupRepo.GetGroupByIdAsync(playPosts.ElementAt(i).groupId);
+                user = await _userRepo.GetUserByIdAsync(playPosts.ElementAt(i).userId);
+
+                postDTOs.Add(new PostDTO
+                {
+                    postId = playPosts.ElementAt(i).Id,
+                    userName = user.userName,
+                    heading = playPosts.ElementAt(i).heading,
+                    content = playPosts.ElementAt(i).content,
+                    timeOfCreation = playPosts.ElementAt(i).timeOfCreation,
+                    play = playPosts.ElementAt(i).play,
+
+                    address = playPosts.ElementAt(i).address,
+                    groupName = group.groupName
+                });
+
+                if ((i + 1) % 5 == 0 || (i + 1) == playPosts.Count())
+                {
+                    user = await _userRepo.GetUserByIdAsync(newsPosts.ElementAt(j).userId);
+                    postDTOs.Add(new PostDTO
+                    {
+                        postId = newsPosts.ElementAt(j).Id,
+                        userName = user.userName,
+                        heading = newsPosts.ElementAt(j).heading,
+                        content = newsPosts.ElementAt(j).content,
+                        timeOfCreation = newsPosts.ElementAt(j).timeOfCreation,
+                        play = newsPosts.ElementAt(j).play,
+
+                        pictureUrl = newsPosts.ElementAt(j).pictureUrl
+                    });
+                    j++;
+                }
+            }
+
+            PagedList<PostDTO> pagedDTOs = PagedList<PostDTO>.ToPagedList(postDTOs, pagingParameters.pageNumber, pagingParameters.pageSize);
+
+            var metadata = new
+            {
+                pagedDTOs.totalCount,
+                pagedDTOs.pageSize,
+                pagedDTOs.currentPage,
+                pagedDTOs.hasNext,
+                pagedDTOs.hasPrevious
+            };
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            Response.Headers.Add("Access-Control-Expose-Headers", "X-Pagination");
+
+            return Ok(pagedDTOs);
+        }
+    
 
         [HttpGet("getPostsFor")]
         public async Task<ActionResult<List<Post>>> getPostsFor(string username)

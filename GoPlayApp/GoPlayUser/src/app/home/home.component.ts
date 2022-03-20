@@ -28,7 +28,8 @@ export class HomeComponent implements OnInit {
     if (this.userService.isLogged() != true) {
       this.router.navigate(['']);
     }
-    this.postService.getAllPosts();
+    if (!this.postService.loadedHome)
+      this.postService.getAllPosts();
     if (this.userService.role == "admin") {
       this.postService.getReportedPosts();
       this.model.period = 0;

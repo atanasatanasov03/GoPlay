@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { PaginationParameters } from '../models/PaginationParameters';
 import { Post } from '../models/Post';
 import { Report } from '../models/Report';
 import { Reported } from '../models/Reported';
@@ -16,6 +16,7 @@ export class PostsService {
   public loadedAdmin: boolean = false;
   public Posts: Post[] = [];
   public Reported: Reported[] = [];
+  public pagination: PaginationParameters;
 
   constructor(private http: HttpClient, private userService: UserServiceService) { }
 
@@ -27,7 +28,12 @@ export class PostsService {
    }
 
   getAllPosts() {
-    this.http.get<Post[]>(this.postUrl + '/getAll').subscribe(res => { this.Posts = res; this.loadedHome = true;});
+    this.http.get<Post[]>(this.postUrl + '/paged?pageNumber=1&pageSize=3', {observe: 'response'})
+      .subscribe(res => {
+        this.Posts = res.body;
+        this.loadedHome = true;
+        this.pagination = JSON.parse(res.headers.get("X-Pagination"));
+      });
   }
 
   getReportedPosts() {

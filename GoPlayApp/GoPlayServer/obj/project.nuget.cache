@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "opTMo4yhkl0jp4d5V9VuJEl10Ca2WIxoAww6sXxDRohZYl7JF4iAKLkjCC8dllOJyGd0OinoBwAmAojptAQarQ==",
+  "dgSpecHash": "CRtWttIkSnBrjbXXZ2yqmKQqSJgYqcWcspQONoUi9C0q9aiWrVqmnDboOXknLxawY86kQZVIrdfHu4MRwX+VWA==",
   "success": true,
-  "projectFilePath": "D:\\School\\Дипломна работа\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj",
+  "projectFilePath": "C:\\Users\\PC\\Desktop\\GoPlay latest working\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\PC\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\PC\\.nuget\\packages\\messagepack\\2.1.90\\messagepack.2.1.90.nupkg.sha512",
