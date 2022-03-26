@@ -14,10 +14,11 @@ namespace GoPlayServer.Data
     public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
-        private readonly string secret = "Nasko.DiplomnaRabota.Key";
-        public UserRepository(AppDbContext context)
+        private readonly IConfiguration _config;
+        public UserRepository(AppDbContext context, IConfiguration config)
         {
             _context = context;
+            _config = config;
         }
 
         public void AddUser(AppUser user)
@@ -48,7 +49,7 @@ namespace GoPlayServer.Data
         public string GetUsernameByTokenAsync(string token)
         {
             
-            var key = Encoding.ASCII.GetBytes(secret);
+            var key = Encoding.ASCII.GetBytes(_config["Jwt:TokenKey"]);
             var handler = new JwtSecurityTokenHandler();
             var validations = new TokenValidationParameters
             {
@@ -79,16 +80,16 @@ namespace GoPlayServer.Data
         public string GenerateJwtToken(AppUser user)
         {
             // generate token that is valid for 7 days
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:TokenKey"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
+              _config["Jwt:Audience"],
+              null,
+              expires: DateTime.Now.AddMinutes(120),
+              signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         public async Task<AppUserDTO> Authenticate(LoginDTO loginDto)

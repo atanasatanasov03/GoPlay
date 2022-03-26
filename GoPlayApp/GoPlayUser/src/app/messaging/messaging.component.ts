@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { LocalStorageService } from 'app/services/local-storage.service';
 import { MessageServiceService } from '../services/message-service.service';
-import { UserServiceService } from '../services/user.service';
 
 @Component({
   selector: 'app-messaging',
@@ -15,10 +15,10 @@ export class MessagingComponent implements OnInit {
   text: string = "";
   joinedGroup: boolean = false;
 
-  constructor(public messageService: MessageServiceService, public userService: UserServiceService, public router: Router) { }
+  constructor(public messageService: MessageServiceService, public localStorage: LocalStorageService, public router: Router) { }
 
   ngOnInit(): void {
-    if (!this.userService.isLogged()) this.router.navigate([""])
+    if (this.localStorage.getUser() == null) this.router.navigate([""])
   }
 
   ngAfterViewInit() {

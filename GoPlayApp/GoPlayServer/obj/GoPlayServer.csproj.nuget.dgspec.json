@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\PC\\Desktop\\GoPlay latest working\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj": {}
+    "D:\\School\\Дипломна работа\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj": {}
   },
   "projects": {
-    "C:\\Users\\PC\\Desktop\\GoPlay latest working\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj": {
+    "D:\\School\\Дипломна работа\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PC\\Desktop\\GoPlay latest working\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj",
+        "projectUniqueName": "D:\\School\\Дипломна работа\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj",
         "projectName": "GoPlayServer",
-        "projectPath": "C:\\Users\\PC\\Desktop\\GoPlay latest working\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj",
+        "projectPath": "D:\\School\\Дипломна работа\\GoPlay\\GoPlayApp\\GoPlayServer\\GoPlayServer.csproj",
         "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PC\\Desktop\\GoPlay latest working\\GoPlay\\GoPlayApp\\GoPlayServer\\obj\\",
+        "outputPath": "D:\\School\\Дипломна работа\\GoPlay\\GoPlayApp\\GoPlayServer\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -133,7 +133,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

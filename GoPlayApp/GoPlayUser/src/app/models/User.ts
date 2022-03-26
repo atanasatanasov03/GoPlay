@@ -2,10 +2,10 @@ import { Token } from "@angular/compiler";
 
 export class User {
   constructor(username: string) {
-    this.username = username;
+    this.userName = username;
   }
 
-  username: string;
+  userName: string;
   role: string;
   token: Token;
   mutedOn: Date;

@@ -34,14 +34,14 @@
             <h5 class="text-muted" *ngIf="!messageService.inGroup">Select a group or join one from the homepage</h5>
 
             <ul class="m-b-0" *ngFor="let m of messageService.messages">
-              <li class="clearfix" *ngIf="m.username == this.userService.username">
+              <li class="clearfix" *ngIf="m.username == this.localStorage.getUser().username">
                 <div class="message-data text-right">
                   <div class="message-data-time">{{m.dateTime | date : 'short'}}</div>
                 </div>
                 <div class="message my-message float-right">{{m.text}}</div>
               </li>
 
-              <li class="clearfix" *ngIf="m.username != this.userService.username">
+              <li class="clearfix" *ngIf="m.username != this.localStorage.getUser().username">
                 <div class="message-data">
                   <span class="message-data-time">{{m.username}} at {{m.dateTime | date : 'short'}}</span>
                 </div>

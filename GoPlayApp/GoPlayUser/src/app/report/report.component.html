@@ -2,10 +2,31 @@
   <h5 class="card-header">{{this.postToReport.heading}}</h5>
   <div class="card-body">
     <h5 class="card-title">File a report against {{this.postToReport.userName}}'s post</h5>
-    <textarea style="margin-bottom:3%" class="form-control"
-              rows="3" placeholder="Reason" [(ngModel)]="model.reason"></textarea>
+    
+    <form [formGroup]="reportForm" (ngSubmit)="submitReport()" autocomplete="off">
 
-    <button class="btn btn-primary" (click)="submitReport()">Submit</button>
-    <button style="float:right" class="btn btn-light" (click)="cancelReport()">Cancel</button>
+      <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+      <div class="form-outline flex-fill mb-0">
+
+        <textarea style="margin-bottom:3%" class="form-control" rows="3" placeholder="Reason" formControlName="reason"
+        [ngClass]="{ 'is-invalid': ( formSubmitted && reportForm.controls.reason.errors) || (!reportForm.controls.reason.pristine && reportForm.controls.reason.invalid) }"></textarea>
+      
+        <div class="invalid-feedback"
+          *ngIf="( formSubmitted && reportForm.controls.reason.errors) || (!reportForm.controls.reason.pristine && reportForm.controls.reason.invalid)">
+          <div *ngIf="reportForm.controls.reason.errors.required">Fill in the reason for the report</div>
+          <div *ngIf="reportForm.controls.reason.errors.minLength == undefined || reportForm.controls.reason.errors.maxLength == undefined">
+            The reason for the report must be between 10 and 60 characters
+          </div>
+         </div>
+
+      </div>
+
+    </form>
+
+    <div style="margin-top: 1%">
+      <button class="btn btn-primary" type="submit">Report</button>
+      <button style="float:right" class="btn btn-light" (click)="cancelReport()">Cancel</button>
+    </div>
+    
   </div>
 </div>

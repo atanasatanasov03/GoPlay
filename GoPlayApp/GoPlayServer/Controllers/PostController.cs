@@ -13,12 +13,15 @@ namespace GoPlayServer.Controllers
 {
     [Route("posts")]
     [ApiController]
+    [Authorize]
     public class PostController : ControllerBase
     {
         private readonly AppDbContext _context;
         private readonly IPostRepository _postRepo;
         private readonly IUserRepository _userRepo;
         private readonly IGroupRepository _groupRepo;
+        private IEnumerable<Post> playPosts;
+        private IEnumerable<Post> newsPosts;
 
         public PostController(AppDbContext context, IPostRepository postRepo, IUserRepository userRepo,
             IGroupRepository groupRepo)
@@ -27,6 +30,13 @@ namespace GoPlayServer.Controllers
             _postRepo = postRepo;
             _userRepo = userRepo;
             _groupRepo = groupRepo;
+            LoadPosts();
+        }
+
+        private async Task LoadPosts()
+        {
+            this.playPosts = await _postRepo.GetPlayPostsAsync();
+            this.newsPosts = await _postRepo.GetNewsPostsAsync();
         }
 
         [HttpPost("createPost")]
@@ -66,6 +76,7 @@ namespace GoPlayServer.Controllers
 
                     address = newPostDTO.address
                 };
+                playPosts.Append(post);
             } else
             {
                 post = new Post
@@ -78,6 +89,7 @@ namespace GoPlayServer.Controllers
 
                     pictureUrl = newPostDTO.pictureUrl
                 };
+                newsPosts.Append(post);
             }
 
             if (newPostDTO.play)
@@ -102,100 +114,26 @@ namespace GoPlayServer.Controllers
             };
         }
 
-        [HttpGet("getAll")]
-        public async Task<ActionResult<List<PostDTO>>> getAllPosts()
-        {
-            var playPosts = await _postRepo.GetPlayPostsAsync();
-            var newsPosts = await _postRepo.GetNewsPostsAsync();
-            var postDTOs = new List<PostDTO>();
-
-            AppUser user;
-
-            for(int i = 0, j = 0; i < playPosts.Count(); i++)
-            {
-                var group = await _groupRepo.GetGroupByIdAsync(playPosts.ElementAt(i).groupId);
-                user = await _userRepo.GetUserByIdAsync(playPosts.ElementAt(i).userId);
-
-                postDTOs.Add(new PostDTO
-                {
-                    postId = playPosts.ElementAt(i).Id,
-                    userName = user.userName,
-                    heading = playPosts.ElementAt(i).heading,
-                    content = playPosts.ElementAt(i).content,
-                    timeOfCreation = playPosts.ElementAt(i).timeOfCreation,
-                    play = playPosts.ElementAt(i).play,
-
-                    address = playPosts.ElementAt(i).address,
-                    groupName = group.groupName
-                });
-
-                if ((i + 1) % 5 == 0 || (i+1) == playPosts.Count())
-                {
-                    user = await _userRepo.GetUserByIdAsync(newsPosts.ElementAt(j).userId);
-                    postDTOs.Add(new PostDTO
-                    {
-                        postId = newsPosts.ElementAt(j).Id,
-                        userName = user.userName,
-                        heading = newsPosts.ElementAt(j).heading,
-                        content = newsPosts.ElementAt(j).content,
-                        timeOfCreation = newsPosts.ElementAt(j).timeOfCreation,
-                        play = newsPosts.ElementAt(j).play,
-
-                        pictureUrl = newsPosts.ElementAt(j).pictureUrl
-                    });
-                    j++;
-                }
-            }
-
-            return Ok(postDTOs);
-        }
-
         [HttpGet("paged")]
-        public async Task<ActionResult<PagedList<PostDTO>>> getAllPosts([FromQuery] QueryParams pagingParameters)
+        public async Task<ActionResult<PagedList<PostDTO>>> getPagedPosts([FromQuery] QueryParams pagingParameters)
         {
-            var playPosts = await _postRepo.GetPlayPostsAsync();
-            var newsPosts = await _postRepo.GetNewsPostsAsync();
             var postDTOs = new List<PostDTO>();
-
-            AppUser user;
 
             for (int i = 0, j = 0; i < playPosts.Count(); i++)
             {
-                var group = await _groupRepo.GetGroupByIdAsync(playPosts.ElementAt(i).groupId);
-                user = await _userRepo.GetUserByIdAsync(playPosts.ElementAt(i).userId);
-
-                postDTOs.Add(new PostDTO
-                {
-                    postId = playPosts.ElementAt(i).Id,
-                    userName = user.userName,
-                    heading = playPosts.ElementAt(i).heading,
-                    content = playPosts.ElementAt(i).content,
-                    timeOfCreation = playPosts.ElementAt(i).timeOfCreation,
-                    play = playPosts.ElementAt(i).play,
-
-                    address = playPosts.ElementAt(i).address,
-                    groupName = group.groupName
-                });
+                postDTOs.Add(await BuildPostDTO(playPosts.ElementAt(i)));
 
                 if ((i + 1) % 5 == 0 || (i + 1) == playPosts.Count())
                 {
-                    user = await _userRepo.GetUserByIdAsync(newsPosts.ElementAt(j).userId);
-                    postDTOs.Add(new PostDTO
+                    if((j+1) <= newsPosts.Count())
                     {
-                        postId = newsPosts.ElementAt(j).Id,
-                        userName = user.userName,
-                        heading = newsPosts.ElementAt(j).heading,
-                        content = newsPosts.ElementAt(j).content,
-                        timeOfCreation = newsPosts.ElementAt(j).timeOfCreation,
-                        play = newsPosts.ElementAt(j).play,
-
-                        pictureUrl = newsPosts.ElementAt(j).pictureUrl
-                    });
-                    j++;
+                        postDTOs.Add(await BuildPostDTO(newsPosts.ElementAt(j)));
+                        j++;
+                    }
                 }
             }
 
-            PagedList<PostDTO> pagedDTOs = PagedList<PostDTO>.ToPagedList(postDTOs, pagingParameters.pageNumber, pagingParameters.pageSize);
+            var pagedDTOs = PagedList<PostDTO>.ToPagedList(postDTOs, pagingParameters.pageNumber, pagingParameters.pageSize);
 
             var metadata = new
             {
@@ -294,13 +232,11 @@ namespace GoPlayServer.Controllers
 
         public async Task<PostDTO> BuildPostDTO(Post post)
         {
-            PostDTO postDTO;
-
             var user = await _userRepo.GetUserByIdAsync(post.userId);
             if (post.play)
             {
                 var group = await _groupRepo.GetGroupByIdAsync(post.groupId);
-                postDTO = new PostDTO
+                return new PostDTO
                 {
                     postId = post.Id,
                     userName = user.userName,
@@ -315,7 +251,7 @@ namespace GoPlayServer.Controllers
             }
             else
             {
-                postDTO = new PostDTO
+                return new PostDTO
                 {
                     postId = post.Id,
                     userName = user.userName,
@@ -327,8 +263,6 @@ namespace GoPlayServer.Controllers
                     pictureUrl = post.pictureUrl
                 };
             }
-
-            return postDTO;
         }
 
         public async Task<bool> UserExists(string userName)

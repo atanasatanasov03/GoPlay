@@ -1,40 +1,100 @@
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/angular-bootstrap-toggle@0.4.2/dist/angular-bootstrap-toggle.min.css">
-<script src="https://cdn.jsdelivr.net/npm/angular-bootstrap-toggle@0.4.2/dist/angular-bootstrap-toggle.min.js"></script>
-
-<div class="card" *ngIf="!this.userService.muted">
+<div class="card" *ngIf="this.userService.user.mutedOn == null">
+  
   <div class="card-header d-flex justify-content-center align-items-center" style="background-color: #f2f2f2">
-    <div style="width: 100%; display: flex; align-items: center; justify-content: center;" *ngIf="this.userService.role == 'regular'">
+    
+    <div style="width: 100%; display: flex; align-items: center; justify-content: center;" *ngIf="this.userService.user.role == 'regular'">
       <h5 style="margin-bottom: 0%">CREATE PLAY POST</h5>
     </div>
-    <div *ngIf="this.userService.role == 'center'">
+    
+    <div *ngIf="this.userService.user.role == 'center'">
       <ng-toggle onColor="success"
                  onText="Create PlayPost"
                  offColor="warning"
                  offText="Create NewsPost"
                  [disabled]="false"
                  [size]=""
-                 [(ngModel)]="this.playPost">
+                 [(ngModel)]="this.playPost"
+                 (click)="toggle()">
       </ng-toggle>
     </div>
+
   </div>
 
-  <form style="margin: 6% 4%" (ngSubmit)="createPost()" autocomplete="off">
+  <form style="margin: 6% 4%" [formGroup]="createForm" (ngSubmit)="createPost()" autocomplete="off">
 
-    <input class="form-control form-control-lg" name="heading" [(ngModel)]="model.heading" type="text" placeholder="heading">
+    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+    <div class="form-outline flex-fill mb-0">
+    
+      <input class="form-control form-control-lg" name="heading" formControlName="heading" type="text"
+        placeholder="Heading" [ngClass]="{ 'is-invalid': ( formSubmitted && createForm.controls.heading.errors) || (!createForm.controls.heading.pristine && createForm.controls.heading.invalid) }">
+    
+      <div class="invalid-feedback"
+        *ngIf="( formSubmitted && createForm.controls.heading.errors) || (!createForm.controls.heading.pristine && createForm.controls.heading.invalid)">
+        <div *ngIf="createForm.controls.heading.errors.required">Post heading is required</div>
+        <div *ngIf="createForm.controls.heading.errors.minLength == undefined || createForm.controls.heading.errors.maxLength == undefined">
+          Post heading must be between 5 and 25 characters
+        </div>
+      </div>
 
-    <textarea style="margin-top: 5%" class="form-control" name="content" [(ngModel)]="model.content" rows="3" placeholder="content"></textarea>
+    </div>
+    
+    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+    <div class="form-outline flex-fill mb-0">
+    
+      <textarea style="margin-top: 5%" class="form-control" name="content" formControlName="content" rows="3"
+        placeholder="Content" [ngClass]="{ 'is-invalid': ( formSubmitted && createForm.controls.content.errors) || (!createForm.controls.content.pristine && createForm.controls.content.invalid) }"></textarea>
 
-    <input *ngIf="this.playPost" style="margin-top: 5%" class="form-control form-control-sm" type="text" name="address" [(ngModel)]="model.address" placeholder="address">
+      <div class="invalid-feedback"
+        *ngIf="( formSubmitted && createForm.controls.content.errors) || (!createForm.controls.content.pristine && createForm.controls.content.invalid)">
+        <div *ngIf="createForm.controls.content.errors.required">Post content is required</div>
+        <div *ngIf="createForm.controls.content.errors.minLength == undefined || createForm.controls.content.errors.maxLength == undefined">
+          Post content must be between 10 and 60 characters
+        </div>
+      </div>
 
-    <input *ngIf="!this.playPost" type="file"  accept="*.png.jpg">
+    </div>
+    
+    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+    <div class="form-outline flex-fill mb-0">
 
+      <input *ngIf="this.playPost" style="margin-top: 5%" class="form-control form-control-sm" type="text" name="address" formControlName="address"
+        placeholder="Address" [ngClass]="{ 'is-invalid': ( formSubmitted && createForm.controls.address.errors) || (!createForm.controls.address.pristine && createForm.controls.address.invalid) }">
+
+      <div class="invalid-feedback"
+        *ngIf="( formSubmitted && createForm.controls.address.errors) || (!createForm.controls.address.pristine && createForm.controls.address.invalid)">
+        <div *ngIf="createForm.controls.address.errors.required">Post address is required</div>
+        <div *ngIf="createForm.controls.address.errors.minLength == undefined || createForm.controls.address.errors.maxLength == undefined">
+          Post address must be between 10 and 50 characters
+        </div>
+      </div>
+
+      <input *ngIf="!this.playPost" style="margin-top: 5%" type="file"  accept="*.png.jpg" name="picture" (change)="onFileSelected($event)" formControlName="picture"
+        [ngClass]="{ 'is-invalid': ( formSubmitted && createForm.controls.picture.errors) || (!createForm.controls.picture.pristine && createForm.controls.picture.invalid) }">
+
+      <div class="invalid-feedback"
+        *ngIf="( formSubmitted && createForm.controls.picture.errors) || (!createForm.controls.picture.pristine && createForm.controls.picture.invalid)">
+        <div *ngIf="createForm.controls.picture.errors.required">Post picture is required</div>
+      </div>
+
+    </div>
+    
     <div style="margin-top: 5%" class="d-flex flex-row justify-content-center">
       <button type="submit" value="" class="btn btn-primary btn-lg mr-5">Create post</button>
       <button type="button" (click)="cancel()" class="btn btn-outline-primary">Cancel</button>
     </div>
+
   </form>
 </div>
 
-<div *ngIf="this.userService.muted">
-  YOU HAVE BEEN VERY NAUGHTY AND FOR THAT YOU HAVE BEEN PUNISHED
+<div class="card" *ngIf="this.userService.user.mutedOn != null">
+  <div class="card-header d-flex justify-content-center align-items-center" style="background-color: #f2f2f2">
+
+    <div style="width: 100%; display: flex; align-items: center; justify-content: center;">
+      <h5 style="margin-bottom: 0%">OOPS</h5>
+    </div>
+
+  </div>
+
+  <h6>It seems that you've been muted</h6>
+  <h6>Your account has been restricted from posting until</h6>
 </div>

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { LocalStorageService } from 'app/services/local-storage.service';
 import { UserServiceService } from '../services/user.service';
 
 @Component({
@@ -14,11 +15,12 @@ export class IndexComponent implements OnInit {
   users: any;
 
   constructor(private http: HttpClient,
+    public localStorage: LocalStorageService,
     public userService: UserServiceService,
     private router: Router) { }
 
   ngOnInit(): void {
-    this.logged = (this.userService as any).isLogged();
+    if(this.localStorage.getUser() != null) this.router.navigate(['/home'])
   }
 
   redirect() {
@@ -27,7 +29,6 @@ export class IndexComponent implements OnInit {
 
   registerToggle() {
     this.registerMode = !this.registerMode;
-    console.log(this.registerMode);
   }
 
   cancelRegisterMode(event: boolean) {
@@ -35,7 +36,7 @@ export class IndexComponent implements OnInit {
   }
 
   isLogged() {
-    if (this.logged == true) {
+    if (this.localStorage.getUser() != null) {
       console.log("logged");
       return true;
     }

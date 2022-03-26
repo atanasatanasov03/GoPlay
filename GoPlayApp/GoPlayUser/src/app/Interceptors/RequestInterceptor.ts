@@ -8,12 +8,12 @@ import { UserServiceService } from "../services/user.service";
 @Injectable()
 export class RequestInterceptor implements HttpInterceptor {
   token: Token
-  constructor(private lsService: LocalStorageService, private userService: UserServiceService) { }
+  constructor(private lsService: LocalStorageService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.token = this.lsService.getToken();
     try {
-      var authHeader = 'Bearer ' + this.token.token;//this.token.access_token;
+      var authHeader = 'Bearer ' + this.token.token;
       const authReq = req.clone({ setHeaders: { Authorization: authHeader } });
 
       return next.handle(authReq);
