@@ -3,6 +3,8 @@ using GoPlayServer.DTOs;
 using GoPlayServer.Entities;
 using GoPlayServer.Hubs;
 using GoPlayServer.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
@@ -10,19 +12,24 @@ namespace GoPlayServer.Controllers
 {
     [Route("chat")]
     [ApiController]
+    [Authorize]
     public class ChatController : ControllerBase
     {
         private readonly AppDbContext _context;
         private readonly IHubContext<MessageHub> hubContext;
+        private readonly IUserRepository _userRepo;
+        private readonly IPostRepository _postRepo;
         private readonly IMessageRepository _messageRepo;
         private readonly IGroupRepository _groupRepo;
 
-        public ChatController(IHubContext<MessageHub> hubContext, IMessageRepository messageRepo, AppDbContext context, IGroupRepository groupRepo)
+        public ChatController(IHubContext<MessageHub> hubContext, IMessageRepository messageRepo, AppDbContext context, IGroupRepository groupRepo, IUserRepository userRepo, IPostRepository postRepo)
         {
             this.hubContext = hubContext;
             _messageRepo = messageRepo;
             _context = context;
             _groupRepo = groupRepo;
+            _userRepo = userRepo;
+            _postRepo = postRepo;
         }
 
         [HttpPost("messageGroup")]
