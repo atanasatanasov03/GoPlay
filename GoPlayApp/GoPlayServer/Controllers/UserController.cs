@@ -11,11 +11,13 @@ using System.Text;
 using Newtonsoft.Json;
 using GoPlayServer.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using System.Web.Http.Cors;
 
 namespace GoPlayServer.Controllers
 {
     [Route("users")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -27,6 +29,7 @@ namespace GoPlayServer.Controllers
             _userRepo = userRepo;
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult<AppUserDTO>> register(RegisterUserDTO RegisterUserDTO)
         {
@@ -45,7 +48,7 @@ namespace GoPlayServer.Controllers
                 age = RegisterUserDTO.age,
                 passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(RegisterUserDTO.password)),
                 passwordSalt = hmac.Key,
-                sports = ""
+                sports = RegisterUserDTO.sports
             };
 
             _userRepo.AddUser(user);
@@ -62,6 +65,7 @@ namespace GoPlayServer.Controllers
             };
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<AppUserDTO>> login(LoginDTO loginDto)
         {
@@ -74,6 +78,7 @@ namespace GoPlayServer.Controllers
             return Ok(userDto);
         }
 
+        [DisableCors]
         [HttpPost("muteUser")]
         public async Task<ActionResult> MuteUser(string username, int period)
         {
@@ -87,7 +92,7 @@ namespace GoPlayServer.Controllers
             _userRepo.Update(user);
             await _context.SaveChangesAsync();
 
-            return Ok("done");
+            return Ok();
         }
 
         [HttpPost("banUser")]
@@ -102,7 +107,7 @@ namespace GoPlayServer.Controllers
             _userRepo.Update(user);
             await _context.SaveChangesAsync();
 
-            return Ok("done");
+            return Ok();
         }
 
         [HttpPost("setSports")]
@@ -129,7 +134,6 @@ namespace GoPlayServer.Controllers
             return user.sports;
         }
 
-        [Authorize]
         [HttpGet("getUser")]
         public async Task<ActionResult<AppUserDTO>> GetUserByUsername(string username)
         {

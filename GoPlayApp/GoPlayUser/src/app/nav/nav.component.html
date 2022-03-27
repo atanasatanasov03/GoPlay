@@ -1,13 +1,13 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark d-flex justify-content-between">
 
-  <div class="container-fluid">
-    <a class="navbar-brand" *ngIf="this.userService.isLogged()" href="/home">GoPlay</a>
-    <a class="navbar-brand" *ngIf="!this.userService.isLogged()" href="#">GoPlay</a>
+  <div class="container-fluid" style="padding: 0%; margin: 0%; width: 53%">
+    <a class="navbar-brand" *ngIf="this.localStorage.getUser() != null" href="/home">GoPlay</a>
+    <a class="navbar-brand" *ngIf="this.localStorage.getUser() == null" href="#">GoPlay</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div *ngIf="!this.userService.isBanned" class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto" *ngIf="userService.currentUser$ | async">
+    <div *ngIf="this.localStorage.getUser() != null && !this.localStorage.getUser().banned" class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto" *ngIf="localStorage.getUser() != null">
         <li class="nav-item">
           <a class="nav-link" (click)="sendToHome()" routerLinkActive="active">Home</a>
         </li>
@@ -18,19 +18,15 @@
     </div>
   </div>
 
-  <div *ngIf="userService.currentUser$ | async" style="vertical-align: middle;">
+  <div *ngIf="localStorage.getUser() != null" style="vertical-align: middle; float: right">
     <button class="btn btn-outline-success my-2 my-sm-0" (click)="logout()">logout</button>
   </div>
 
-    <form #loginForm="ngForm" *ngIf="(userService.currentUser$ | async) === null" class="form-inline mt-2 mt-md-0" autocomplete="off"
+    <form [formGroup]="loginForm" *ngIf="localStorage.getUser() == null" class="form-inline mt-2 mt-md-0" autocomplete="off"
           (ngSubmit)="login()" style="margin-left: 69;">
-      <div class="form-row">
-        <input name="username"
-               [(ngModel)]="model.username"
-               class="form-control mr-sm-2" type="text" placeholder="Username" aria-label="Username">
-        <input name="password"
-               [(ngModel)]="model.password"
-               class="form-control mr-sm-2" type="password" placeholder="Password" aria-label="Password">
+      <div class="form-row" style="height: 38px;">
+        <input name="username" formControlName="username" class="form-control mr-sm-2" type="text" placeholder="Username" aria-label="Username">
+        <input name="password" formControlName="password" class="form-control mr-sm-2" type="password" placeholder="Password" aria-label="Password">
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</button>
       </div>
     </form>

@@ -6,8 +6,8 @@
   </div>
   <main class="page-main" style="position: relative">
     <div style="margin-top: 10%;" class=" d-flex justify-content-center align-items-center">
-      <h1 *ngIf="this.userService.role != 'admin'" style="text-align:center">HOME PAGE FEED</h1>
-      <div *ngIf="this.userService.role == 'admin'">
+      <h1 *ngIf="this.localStorage.getUser().role != 'admin'" style="text-align:center">HOME PAGE FEED</h1>
+      <div *ngIf="this.localStorage.getUser().role == 'admin'">
         <ng-toggle onColor="success"
                    onText="Home Page"
                    offColor="warning"
@@ -48,6 +48,12 @@
           </div>
         </div>
       </div>
+      <div class="d-flex justify-content-center">
+        <ngb-pagination [collectionSize]="postService.pagination.totalCount" [(page)]="currentPage" [pageSize]="postService.pagination.pageSize"
+                        [maxSize]="20" [rotate]="true" [ellipses]="false" [boundaryLinks]="true" (pageChange)="changePage()"></ngb-pagination>
+        <input style="height: 2em; width: 3em; margin-left: 2em; margin-top:0.5%" type="number" 
+                        name="period" min="2" max="10" (keyup.enter)="setPageSize()" [(ngModel)]="model.pageSize">
+      </div>
     </div>
     <div *ngIf="this.postService.loadedAdmin && !this.homeOrAdmin">
       <h6 class="mt-3" style="text-align:center; font-size: large" *ngIf="this.postService.Reported.length==0">THERE ARE NO REPORTED POSTS</h6>
@@ -64,7 +70,7 @@
           </div>
           <div class="card-footer">
             <div class="row mb-3 mt-2 d-flex justify-content-center" style="width: 100%; text-align:center">
-            Reported by {{report.reporter}}; the reason being: {{report.reason}}
+              Reported by {{report.reporter}}; the reason being: {{report.reason}}
             </div>
             <div class="row d-flex justify-content-around">
               <div class="col" align="center">
@@ -72,7 +78,9 @@
               </div>
               <div class="col" align="center">
                 <button type="button" class="btn btn-warning row mb-2"
-                        [disabled]="model.period<1 || model.period>21" (click)="mute(report)">Mute User</button>
+                        [disabled]="model.period<1 || model.period>21" (click)="mute(report)">
+                  Mute User
+                </button>
                 <input class="row" type="number" name="period" min="1" max="21" [(ngModel)]="model.period">
               </div>
               <div class="col" align="center">
@@ -89,7 +97,7 @@
     </div>
   </main>
   <div class="page-side">
-    <div class="side-component" *ngIf="this.userService.role != 'admin'">
+    <div class="side-component" *ngIf="this.localStorage.getUser().role != 'admin'">
       <div class="text-center" *ngIf="!createPost">
         <button type="button" (click)="this.createPost = !this.createPost" class="btn btn-outline-secondary" style="margin: 0 auto;">Create post</button>
       </div>

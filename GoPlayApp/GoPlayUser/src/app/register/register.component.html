@@ -1,7 +1,7 @@
 <section class="vh-100 w-100 justify-content-center">
   <div class="container w-100 vh-100">
     <div class="row mx-0 d-flex justify-content-center align-items-center w-100 h-100">
-      <div class="col-12 col-11">
+      <div class="col-12 col-11" style="width: 50%">
         <div class="card text-black" style="border-radius: 25px;">
           <div class="card-body py-0">
             <div class="w-100 row mx-0 justify-content-center">
@@ -9,24 +9,42 @@
 
                 <p class="text-center h1 fw-bold mb-3 mx-1 mx-md-4 mt-3">Sign up</p>
 
-                <form class="mx-1 mx-md-3" #registerForm="ngForm" (ngSubmit)="register()"
-                      autocomplete="off" method="post" id="registerForm">
+                <form class="mx-1 mx-md-3" [formGroup]="registerForm" (ngSubmit)="register()"
+                    autocomplete="off" method="post" id="registerForm">
 
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
+                      
                       <label class="form-label" for="email">Email Address</label>
-                      <input type="email" class="form-control" name="email" [(ngModel)]="model.email"
-                             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required name="email" />
+                      <input type="email" class="form-control" name="email" 
+                              formControlName="email" name="email" 
+                              [ngClass]="{ 'is-invalid': ( formSubmitted && registerForm.controls.email.errors) || (!registerForm.controls.email.pristine && registerForm.controls.email.invalid) }">
+
+                      <div class="invalid-feedback"
+                          *ngIf="( formSubmitted && registerForm.controls.email.errors) || (!registerForm.controls.email.pristine && registerForm.controls.email.invalid)">
+                          <div *ngIf="registerForm.controls.email.errors.required">Email is required</div>
+                          <div *ngIf="registerForm.controls.email.errors.pattern">Invalid Email</div>
+                      </div>
+                    
                     </div>
                   </div>
 
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
+
                       <label class="form-label" for="username">Username</label>
-                      <input type="text" name="username" [(ngModel)]="model.username"
-                             class="form-control" required name="username" minlength="6">
+                      <input type="text" name="username" 
+                             class="form-control" name="username" formControlName="username"
+                             [ngClass]="{ 'is-invalid': ( formSubmitted && registerForm.controls.username.errors) || (!registerForm.controls.username.pristine && registerForm.controls.username.invalid) }">
+
+                      <div class="invalid-feedback"
+                        *ngIf="( formSubmitted && registerForm.controls.username.errors) || (!registerForm.controls.username.pristine && registerForm.controls.username.invalid)">
+                        <div *ngIf="registerForm.controls.username.errors.required">Username is required</div>
+                        <div *ngIf="registerForm.controls.username.errors.minLength == undefined">Username must be at least 6 characters long</div>
+                      </div>
+
                     </div>
                   </div>
 
@@ -35,9 +53,18 @@
                       <div class="d-flex flex-row align-items-center mb-4">
                         <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                         <div class="form-outline flex-fill mb-0">
+
                           <label for="firstName">First name</label>
-                          <input type="text" name="firstName" [(ngModel)]="model.firstName"
-                                 class="form-control" required name="firstName" minlength="6">
+                          <input type="text" name="firstName" 
+                                 class="form-control" name="firstName" formControlName="firstName"
+                                 [ngClass]="{ 'is-invalid': ( formSubmitted && registerForm.controls.firstName.errors) || (!registerForm.controls.firstName.pristine && registerForm.controls.firstName.invalid) }">
+
+                          <div class="invalid-feedback"
+                            *ngIf="( formSubmitted && registerForm.controls.firstName.errors) || (!registerForm.controls.firstName.pristine && registerForm.controls.firstName.invalid)">
+                            <div *ngIf="registerForm.controls.firstName.errors.required">First Name is required</div>
+                            <div *ngIf="registerForm.controls.firstName.errors.minLength == undefined">First Name must be at least 2 characters long</div>
+                          </div>
+
                         </div>
                       </div>
                     </div>
@@ -45,41 +72,110 @@
                       <div class="d-flex flex-row align-items-center mb-4">
                         <i class="fas fa-key fa-lg me-3 fa-fw"></i>
                         <div class="form-outline flex-fill mb-0">
+
                           <label for="lastName">Last name</label>
-                          <input type="text" name="lastName" [(ngModel)]="model.lastName"
-                                 class="form-control" required name="lastName" minlength="6">
+                          <input type="text" name="lastName"
+                                 class="form-control" name="lastName" formControlName="lastName"
+                                 [ngClass]="{ 'is-invalid': ( formSubmitted && registerForm.controls.lastName.errors) || (!registerForm.controls.lastName.pristine && registerForm.controls.lastName.invalid) }">
+                        
+                          <div class="invalid-feedback"
+                            *ngIf="( formSubmitted && registerForm.controls.lastName.errors) || (!registerForm.controls.lastName.pristine && registerForm.controls.lastName.invalid)">
+                            <div *ngIf="registerForm.controls.lastName.errors.required">Last Name is required</div>
+                            <div *ngIf="registerForm.controls.lastName.errors.minLength == undefined">Last Name must be at least 2 characters long</div>
+                          </div>
+              
                         </div>
                       </div>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-row justify-content-between mb-4">
+                    <div style="width:30%">
+
+                      <label class="form-label" for="age">Age</label>
+                      <input class="form-control" type="text" name="age" formControlName="age"
+                      [ngClass]="{ 'is-invalid': ( formSubmitted && registerForm.controls.age.errors) || (!registerForm.controls.age.pristine && registerForm.controls.age.invalid) }">
+
+                      <div class="invalid-feedback"
+                        *ngIf="( formSubmitted && registerForm.controls.age.errors) || (!registerForm.controls.age.pristine && registerForm.controls.age.invalid)">
+                        <div *ngIf="registerForm.controls.age.errors.required">Age is required</div>
+                        <div *ngIf="registerForm.controls.age.errors.min || registerForm.controls.age.errors.max">You must be between 14 and 60 years old to register</div>
+                      </div>
+
+                    </div>
+                    <div style="width:63%">
+
+                      <label class="form-label" for="sports">Enter 1-4 of your favourite sports</label>
+                      <ng-multiselect-dropdown
+                          formControlName="sports"
+                          name="sports" 
+                          [settings]="this.dropdownSettings"
+                          [data]="this.sports"
+                          [ngClass]="{ 'is-invalid': ( formSubmitted && registerForm.controls.sports.errors) || (!registerForm.controls.sports.pristine && registerForm.controls.sports.invalid) }">
+                      </ng-multiselect-dropdown>
+                    
+                      <div class="invalid-feedback"
+                        *ngIf="( formSubmitted && registerForm.controls.sports.errors) || (!registerForm.controls.sports.pristine && registerForm.controls.sports.invalid)">
+                        <div *ngIf="registerForm.controls.sports.errors.required">Please select your favourite sports</div>
+                      </div>
+
                     </div>
                   </div>
 
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-key fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
+
                       <label for="address">Address</label>
-                      <input type="text" name="address" [(ngModel)]="model.address"
-                             class="form-control" required name="address" minlength="6">
+                      <input type="text" name="address"
+                             class="form-control" name="address" formControlName="address"
+                             [ngClass]="{ 'is-invalid': ( formSubmitted && registerForm.controls.address.errors) || (!registerForm.controls.address.pristine && registerForm.controls.address.invalid) }">
+
+                      <div class="invalid-feedback"
+                        *ngIf="( formSubmitted && registerForm.controls.address.errors) || (!registerForm.controls.address.pristine && registerForm.controls.address.invalid)">
+                        <div *ngIf="registerForm.controls.address.errors.required">Address is required</div>
+                        <div *ngIf="registerForm.controls.address.errors.minLength == undefined">Address must be at least 10 characters long</div>
+                      </div>
+
                     </div>
                   </div>
 
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
+
                         <label for="password">Password</label>
-                        <input type="password" name="password" [(ngModel)]="model.password"
-                               class="form-control" required id="password" name="password" minlength="8">
+                        <input type="password" name="password" class="form-control"
+                            id="password" name="password" formControlName="password"
+                            [ngClass]="{ 'is-invalid': ( formSubmitted && registerForm.controls.password.errors) || (!registerForm.controls.password.pristine && registerForm.controls.password.invalid) }">
                         <span style="display: block; margin-top: 5px; margin-bottom: 10px;color: #737373;">
                           Choose a password for your new account.
                         </span>
+
+                        <div class="invalid-feedback"
+                          *ngIf="( formSubmitted && registerForm.controls.password.errors) || (!registerForm.controls.password.pristine && registerForm.controls.password.invalid)">
+                          <div *ngIf="registerForm.controls.password.errors.required">Please type in a password</div>
+                          <div *ngIf="registerForm.controls.password.errors.minLength == undefined">Password must be at least 8 characters long</div>
+                        </div>
+
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
+
                         <label for="confirm_password">Repeat Password</label>
-                        <input type="password" class="form-control" required id="confirm_password" name="confirm_password" minlength="8">
+                        <input type="password" class="form-control" id="confirm_password" 
+                            name="confirm_password" formControlName="repeatPassword"
+                            [ngClass]="{ 'is-invalid': ( formSubmitted && registerForm.controls.repeatPassword.errors) || (!registerForm.controls.repeatPassword.pristine && registerForm.controls.repeatPassword.invalid) }">
                         <span style="display: block; margin-top: 5px; margin-bottom: 10px; color: #737373;">
                           Type the password again. Passwords must match.
                         </span>
+
+                        <div class="invalid-feedback"
+                          *ngIf="( formSubmitted && registerForm.controls.repeatPassword.errors) || (!registerForm.controls.repeatPassword.pristine && registerForm.controls.repeatPassword.invalid)">
+                          <div *ngIf="registerForm.controls.repeatPassword.errors.required">Please repeat your password</div>
+                          <div *ngIf="registerForm.controls.repeatPassword.errors.confirmPasswordValidator">Passwords don't match</div>
+                        </div>
+
                       </div>
                     </div>
                   </div>

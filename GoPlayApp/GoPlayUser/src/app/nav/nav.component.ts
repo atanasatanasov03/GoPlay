@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { User } from '../models/User';
 import { LocalStorageService } from '../services/local-storage.service';
@@ -12,43 +13,60 @@ import { UserServiceService } from '../services/user.service';
   styleUrls: ['./nav.component.css']
 })
 export class NavComponent implements OnInit {
-  model: any = {};
-  logged: boolean;
+  loginForm: FormGroup;
 
   constructor(
     public userService: UserServiceService,
     public localStorage: LocalStorageService,
     public messageService: MessageServiceService,
     public notificationService: NotificationService,
+    private builder: FormBuilder,
     private router: Router
     ) { }
 
-  ngOnInit(): void {
-    this.logged = this.userService.isLogged()
+  ngOnInit() {
+    this.loginForm = this.builder.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required]
+    });
   }
 
   login() {
-    this.userService.login(this.model).subscribe(response => {
-      if (this.userService.isBanned) {
-        console.log(this.userService.isBanned)
+    if(this.loginForm.invalid) {
+      if(this.loginForm.get("username").errors?.required && this.loginForm.get("password").errors?.required)
+        this.notificationService.showError("Username and Password cannot be empty", "")
+      else if(this.loginForm.get("username").errors?.required)
+        this.notificationService.showError("Username cannot be empty", "")
+      else if(this.loginForm.get("password").errors?.required)
+        this.notificationService.showError("Password cannot be empty", "")
+
+      return;
+    }
+    this.userService.login(this.buildModel()).subscribe(response => {
+      if (this.localStorage.getUser().banned) {
         this.router.navigate(["/"])
       }
 
       this.localStorage.setToken(response)
-      this.logged = this.userService.isLogged();
       this.messageService.connect();
       this.messageService.getGroups();
 
-      this.notificationService.showSuccess("Hello " + this.model.username, "Successfull login");
-
-      this.model.username = "";
-      this.model.password = "";
+      this.notificationService.showSuccess("Hello " + this.loginForm.get("username").value, "Successfull login");
       
       this.router.navigate(['/home'])
-      
+
+      this.loginForm.controls.username.setValue('');
+      this.loginForm.controls.password.setValue('');
     }, error => {
       this.notificationService.showError("Incorrext username or password", "Bad login credentials")
     })
+  }
+
+  buildModel() {
+    return {
+      username: this.loginForm.get("username").value,
+      password: this.loginForm.get("password").value
+    }
   }
 
   sendToHome() {
@@ -60,10 +78,8 @@ export class NavComponent implements OnInit {
   }
 
   logout() {
-    localStorage.removeItem('user');
-    this.logged = false;
     this.router.navigate([''])
-    this.userService.setCurrentUser(null);
+    this.localStorage.setUser(null);
     this.notificationService.showInfo("You have logged out of your account", "Logout")
   }
 }

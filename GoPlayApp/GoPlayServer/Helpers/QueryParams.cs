@@ -2,7 +2,7 @@
 {
     public class QueryParams
     {
-        const int maxPageSize = 25;
+        const int maxPageSize = 15;
         public int pageNumber { get; set; } = 1;
         private int _pageSize = 10;
         public int pageSize {

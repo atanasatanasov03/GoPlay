@@ -33,6 +33,7 @@
     "jest-editor-support": "*",
     "jquery": "^1.9.1",
     "moment-timezone": "^0.5.34",
+    "ng-multiselect-dropdown": "^0.3.8",
     "ngx-bootstrap": "^8.0.0",
     "ngx-toastr": "^14.2.2",
     "popper.js": "^1.12.3",

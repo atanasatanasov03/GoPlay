@@ -81,7 +81,6 @@ D:\School\Дипломна работа\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\
 D:\School\Дипломна работа\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\GoPlayServer.deps.json
 D:\School\Дипломна работа\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\GoPlayServer.runtimeconfig.json
 D:\School\Дипломна работа\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\GoPlayServer.dll
-D:\School\Дипломна работа\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\ref\GoPlayServer.dll
 D:\School\Дипломна работа\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\GoPlayServer.pdb
 D:\School\Дипломна работа\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\Humanizer.dll
 D:\School\Дипломна работа\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\System.Web.Cors.dll
@@ -249,3 +248,4 @@ C:\Users\PC\Desktop\GoPlay latest working\GoPlay\GoPlayApp\GoPlayServer\obj\Debu
 C:\Users\PC\Desktop\GoPlay latest working\GoPlay\GoPlayApp\GoPlayServer\obj\Debug\net6.0\ref\GoPlayServer.dll
 C:\Users\PC\Desktop\GoPlay latest working\GoPlay\GoPlayApp\GoPlayServer\obj\Debug\net6.0\GoPlayServer.pdb
 C:\Users\PC\Desktop\GoPlay latest working\GoPlay\GoPlayApp\GoPlayServer\obj\Debug\net6.0\GoPlayServer.genruntimeconfig.cache
+D:\School\Дипломна работа\GoPlay\GoPlayApp\GoPlayServer\obj\Debug\net6.0\refint\GoPlayServer.dll
