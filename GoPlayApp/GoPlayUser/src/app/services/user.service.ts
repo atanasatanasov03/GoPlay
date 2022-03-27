@@ -14,6 +14,7 @@ export class UserServiceService {
   accUrl = "https://localhost:7170/users";
 
   public user: User;
+  public mutedUntil: Date;
 
   constructor(private http: HttpClient,
     private storageService: LocalStorageService)
@@ -46,6 +47,11 @@ export class UserServiceService {
           this.storageService.setUser(user);
           this.storageService.setToken(token);
           this.user = user;
+          console.log(this.user);
+          if (this.user.mutedOn != null) {
+            this.mutedUntil.setDate(this.user.mutedOn.getDate() + this.user.mutedFor);
+            console.log(this.mutedUntil);
+          }
         }
         return user;
       })

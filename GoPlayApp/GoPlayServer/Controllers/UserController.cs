@@ -92,7 +92,7 @@ namespace GoPlayServer.Controllers
             _userRepo.Update(user);
             await _context.SaveChangesAsync();
 
-            return Ok("done");
+            return Ok();
         }
 
         [HttpPost("banUser")]
@@ -107,7 +107,7 @@ namespace GoPlayServer.Controllers
             _userRepo.Update(user);
             await _context.SaveChangesAsync();
 
-            return Ok("done");
+            return Ok();
         }
 
         [HttpPost("setSports")]

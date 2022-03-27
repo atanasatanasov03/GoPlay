@@ -10,6 +10,7 @@
         public bool play { get; set; }
         public string? address { get; set; }
         public Guid? groupId { get; set; }
+        public DateTime? timeOfMeeting { get; set; }
         public virtual Group group { get; set; }
         public string? pictureUrl { get; set; }
     }
