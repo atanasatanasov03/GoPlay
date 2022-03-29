@@ -18,6 +18,10 @@ namespace GoPlayServer.Data
             await _context.Groups.AddAsync(group);
         }
 
+        public void RemoveGroup(Group group) {
+            _context.Groups.Remove(group);
+        }
+
         public async Task<Group> GetGroupByNameAsync(string name)
         {
             return await _context.Groups.SingleOrDefaultAsync(g => g.groupName == name);

@@ -6,6 +6,7 @@ import { MessagePackHubProtocol } from '@microsoft/signalr-protocol-msgpack'
 import { Message } from '../models/Message';
 import { UserServiceService } from './user.service';
 import { LocalStorageService } from './local-storage.service';
+import * as signalR from '@microsoft/signalr';
 
 @Injectable({
   providedIn: 'root'
@@ -31,9 +32,19 @@ export class MessageServiceService {
     this.recieveMessageFromGroup();
   }
 
+  private startConnection() {
+    this.hubConnection = this.getConnection();
+    this.hubConnection.start()
+      .then(() => console.log('connection started'))
+      .catch((err) => console.log('error while establishing connection: ' + err))
+  }
+
   private getConnection(): HubConnection {
     return new HubConnectionBuilder()
-      .withUrl(this.connectionUrl)
+      .withUrl(this.connectionUrl, {
+        skipNegotiation: true,
+        transport: signalR.HttpTransportType.WebSockets
+      })
       .withHubProtocol(new MessagePackHubProtocol())
       .build();
   }
@@ -45,13 +56,6 @@ export class MessageServiceService {
       text: message,
       dateTime: new Date()
     };
-  }
-
-  private startConnection() {
-    this.hubConnection = this.getConnection();
-    this.hubConnection.start()
-      .then(() => console.log('connection started'))
-      .catch((err) => console.log('error while establishing connection: ' + err))
   }
 
   private addListeners() {

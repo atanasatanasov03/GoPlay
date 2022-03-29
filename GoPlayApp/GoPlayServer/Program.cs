@@ -33,6 +33,11 @@ namespace GoPlayServer
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.ConfigureLogging(webBuilder => {
+                        webBuilder.ClearProviders();
+                        webBuilder.AddConsole();
+                        }
+                    );
                 });
     }
 }

@@ -16,7 +16,7 @@ namespace GoPlayServer
         }
 
         public IConfiguration Configuration { get; }
-        private readonly string cors = "CorsPolicy";
+        private readonly string cors = "AllowOrigin";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -28,11 +28,12 @@ namespace GoPlayServer
             services.AddCors(options =>
             {
                 options.AddPolicy(cors,
-                    builder => builder.WithOrigins("http://localhost")
+                    builder => builder.AllowAnyOrigin() //WithOrigins("http://localhost")
                         .AllowAnyHeader()
-                        .SetIsOriginAllowed(_ => true)
+                        //.SetIsOriginAllowed(_ => true)
                         .AllowAnyMethod()
-                        .AllowCredentials()
+                        .DisallowCredentials()
+                        //.AllowCredentials()
                         );
             });
 
@@ -52,7 +53,7 @@ namespace GoPlayServer
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();

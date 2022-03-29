@@ -94,7 +94,13 @@
     </div>
 
   </div>
-
-  <h6>It seems that you've been muted</h6>
-  <h6>Your account has been restricted from posting until {{this.userService.mutedUntil}}</h6>
+  
+  <div class="card-body">
+    <h6>It seems that you've been muted</h6>
+    <h6>Your account has been restricted from posting until {{this.userService.mutedUntil | date: 'short'}}</h6>
+  </div>
+  
+  <div style="margin-bottom: 5%" class="d-flex flex-row justify-content-center">
+    <button type="button" (click)="cancel()" class="btn btn-outline-primary">Close</button>
+  </div>
 </div>

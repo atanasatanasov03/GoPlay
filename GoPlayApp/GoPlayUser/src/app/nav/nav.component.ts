@@ -58,6 +58,7 @@ export class NavComponent implements OnInit {
       this.loginForm.controls.username.setValue('');
       this.loginForm.controls.password.setValue('');
     }, error => {
+      console.log(error)
       this.notificationService.showError("Incorrext username or password", "Bad login credentials")
     })
   }

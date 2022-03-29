@@ -8,7 +8,7 @@ export class User {
   userName: string;
   role: string;
   token: Token;
-  mutedOn: Date;
+  mutedOn: string;
   mutedFor: number;
   banned: boolean;
 }

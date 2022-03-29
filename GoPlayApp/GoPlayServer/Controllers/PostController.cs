@@ -20,16 +20,18 @@ namespace GoPlayServer.Controllers
         private readonly IPostRepository _postRepo;
         private readonly IUserRepository _userRepo;
         private readonly IGroupRepository _groupRepo;
+        private readonly IMessageRepository _messageRepo;
         private IEnumerable<Post> playPosts;
         private IEnumerable<Post> newsPosts;
 
         public PostController(AppDbContext context, IPostRepository postRepo, IUserRepository userRepo,
-            IGroupRepository groupRepo)
+            IGroupRepository groupRepo, IMessageRepository messageRepo)
         {
             _context = context;
             _postRepo = postRepo;
             _userRepo = userRepo;
             _groupRepo = groupRepo;
+            _messageRepo = messageRepo;
             LoadPosts();
         }
 
@@ -223,7 +225,11 @@ namespace GoPlayServer.Controllers
             if(reportDTO.toBeRemoved == true)
             {
                 var post = await _context.Posts.SingleOrDefaultAsync(p => p.Id == reportedPost.reportedPostId);
+                if( post == null ) return new BadRequestResult();
+                var group = await _context.Groups.SingleOrDefaultAsync(g => g.Id == post.groupId);
+                
                 _postRepo.RemovePost(post);
+
             } 
             await _context.SaveChangesAsync();
 

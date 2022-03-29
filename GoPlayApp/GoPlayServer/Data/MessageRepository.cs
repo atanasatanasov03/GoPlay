@@ -12,6 +12,14 @@ namespace GoPlayServer.Data
             _context = context;
         }
 
+        public void RemoveMessagesFor(Guid groupId) {
+            var group = _context.Groups.SingleOrDefault(g => g.Id == groupId);
+
+            if (group == null) return;
+
+            _context.Message.RemoveRange(_context.Message.Where(m => m.GroupId == groupId));
+        }
+
         public ICollection<MessageDTO> GetMessagesIn(string groupname)
         {
             var group = _context.Groups.SingleOrDefault(g => g.groupName == groupname);

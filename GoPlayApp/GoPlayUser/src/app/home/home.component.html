@@ -24,7 +24,7 @@
         <div *ngIf="post.play" class="card" style="width: 100%; margin-top: 20px; margin-bottom: 20px">
           <div class="card-header d-flex aligns-items-center justify-content-between" style="margin-bottom: 10px">
             <h5 class="card-title" style="display:inline-block; margin-top:6px; margin-bottom:6px">{{post.heading}}</h5>
-            <button type="button" (click)="reportPost(post)" class="btn btn-primary btn-sm" style="margin-top:6px; margin-bottom: 6px">Report</button>
+            <button type="button" *ngIf="post.userName != this.userService.user.userName" (click)="reportPost(post)" class="btn btn-primary btn-sm" style="margin-top:6px; margin-bottom: 6px">Report</button>
           </div>
           <div class="card-body">
             <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block">Posted by: {{post.userName}}</h6>

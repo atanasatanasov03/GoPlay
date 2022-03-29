@@ -17,7 +17,7 @@ namespace GoPlayServer.Controllers
 {
     [Route("users")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class UserController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -78,10 +78,15 @@ namespace GoPlayServer.Controllers
             return Ok(userDto);
         }
 
-        [DisableCors]
         [HttpPost("muteUser")]
         public async Task<ActionResult> MuteUser(string username, int period)
         {
+            Request.Headers.TryGetValue("Authorization", out var header);
+            if (header.IsNullOrEmpty()) return new UnauthorizedResult();
+            var token = header.First().Split(" ").Last();
+
+            if (_userRepo.ValidateToken(token).IsNullOrEmpty()) return new UnauthorizedResult();
+
             var user = await _userRepo.GetUserByUsernameAsync(username);
 
             if (user == null) return new BadRequestResult();
@@ -98,6 +103,12 @@ namespace GoPlayServer.Controllers
         [HttpPost("banUser")]
         public async Task<ActionResult> banUser(string username)
         {
+            Request.Headers.TryGetValue("Authorization", out var header);
+            if (header.IsNullOrEmpty()) return new UnauthorizedResult();
+            var token = header.First().Split(" ").Last();
+
+            if (_userRepo.ValidateToken(token).IsNullOrEmpty()) return new UnauthorizedResult();
+
             var user = await _userRepo.GetUserByUsernameAsync(username);
 
             if (user == null) return new BadRequestResult();
@@ -127,11 +138,17 @@ namespace GoPlayServer.Controllers
         [HttpGet("sports")]
         public async Task<ActionResult<string>> getSports(string username)
         {
+            Request.Headers.TryGetValue("Authorization", out var header);
+            if(header.IsNullOrEmpty()) return new UnauthorizedResult();
+            var token = header.First().Split(" ").Last();
+
+            if(_userRepo.ValidateToken(token).IsNullOrEmpty()) return new UnauthorizedResult();
+
             var user = await _userRepo.GetUserByUsernameAsync(username.ToLower());
 
             if (user == null) return new BadRequestResult();
 
-            return user.sports;
+            return token;
         }
 
         [HttpGet("getUser")]

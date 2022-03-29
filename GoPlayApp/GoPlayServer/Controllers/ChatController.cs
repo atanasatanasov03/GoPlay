@@ -12,7 +12,7 @@ namespace GoPlayServer.Controllers
 {
     [Route("chat")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ChatController : ControllerBase
     {
         private readonly AppDbContext _context;

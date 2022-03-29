@@ -4,7 +4,6 @@ D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin
 D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\GoPlayServer.deps.json
 D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\GoPlayServer.runtimeconfig.json
 D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\GoPlayServer.dll
-D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\ref\GoPlayServer.dll
 D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\GoPlayServer.pdb
 D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\Microsoft.AspNetCore.Server.Kestrel.Https.dll
 D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.dll
@@ -249,3 +248,15 @@ C:\Users\PC\Desktop\GoPlay latest working\GoPlay\GoPlayApp\GoPlayServer\obj\Debu
 C:\Users\PC\Desktop\GoPlay latest working\GoPlay\GoPlayApp\GoPlayServer\obj\Debug\net6.0\GoPlayServer.pdb
 C:\Users\PC\Desktop\GoPlay latest working\GoPlay\GoPlayApp\GoPlayServer\obj\Debug\net6.0\GoPlayServer.genruntimeconfig.cache
 D:\School\Дипломна работа\GoPlay\GoPlayApp\GoPlayServer\obj\Debug\net6.0\refint\GoPlayServer.dll
+D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\MessagePack.dll
+D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\MessagePack.Annotations.dll
+D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\Microsoft.AspNet.SignalR.Core.dll
+D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\Microsoft.AspNetCore.Connections.Abstractions.dll
+D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\Microsoft.AspNetCore.SignalR.Common.dll
+D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\Microsoft.AspNetCore.SignalR.Protocols.MessagePack.dll
+D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\Microsoft.Bcl.AsyncInterfaces.dll
+D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\Microsoft.Extensions.Features.dll
+D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\System.IO.Pipelines.dll
+D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\System.Net.WebSockets.WebSocketProtocol.dll
+D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\obj\Debug\net6.0\refint\GoPlayServer.dll
+D:\School\Дипломна работа\GoPlay\GoPlay\GoPlayApp\GoPlayServer\bin\Debug\net6.0\Microsoft.Extensions.Caching.Memory.dll

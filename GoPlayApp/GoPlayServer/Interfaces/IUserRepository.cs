@@ -13,6 +13,7 @@ namespace GoPlayServer.Interfaces
         Task<AppUser> GetUserByIdAsync(Guid id);
         Task<AppUser> GetUserByUsernameAsync(string username);
         string GetUsernameByTokenAsync(string token);
+        string ValidateToken(string token);
         string GenerateJwtToken(AppUser user);
         Task<AppUserDTO> Authenticate(LoginDTO loginDto);
     }

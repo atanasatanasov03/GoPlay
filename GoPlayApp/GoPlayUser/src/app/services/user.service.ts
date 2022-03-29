@@ -14,7 +14,7 @@ export class UserServiceService {
   accUrl = "https://localhost:7170/users";
 
   public user: User;
-  public mutedUntil: Date;
+  public mutedUntil = new Date();
 
   constructor(private http: HttpClient,
     private storageService: LocalStorageService)
@@ -49,7 +49,7 @@ export class UserServiceService {
           this.user = user;
           console.log(this.user);
           if (this.user.mutedOn != null) {
-            this.mutedUntil.setDate(this.user.mutedOn.getDate() + this.user.mutedFor);
+            this.mutedUntil.setDate(new Date(Date.parse(this.user.mutedOn)).getDate() + this.user.mutedFor);
             console.log(this.mutedUntil);
           }
         }
