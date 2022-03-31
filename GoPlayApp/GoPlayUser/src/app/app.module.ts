@@ -11,6 +11,8 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { environment } from '../environments/environment';
 import { NgToggleModule } from '@nth-cloud/ng-toggle';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
 
 import { AppComponent } from './app.component';
 import { IndexComponent } from './index/index.component';
@@ -25,6 +27,7 @@ import { UserServiceService } from './services/user.service';
 import { RequestInterceptor } from './Interceptors/RequestInterceptor';
 import { ReportComponent } from './report/report.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +39,8 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     HomeComponent,
     CreatePostComponent,
     MessagingComponent,
-    ReportComponent
+    ReportComponent,
+    ConfirmEmailComponent
   ],
   imports: [
     BrowserModule,
@@ -58,7 +62,9 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     AngularFireStorageModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     NgToggleModule,
-    NgMultiSelectDropDownModule.forRoot()
+    NgMultiSelectDropDownModule.forRoot(),
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [
     {

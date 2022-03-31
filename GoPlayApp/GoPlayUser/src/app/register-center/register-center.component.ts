@@ -66,14 +66,18 @@ export class RegisterCenterComponent implements OnInit {
   }
 
   register() {
-    this.userService.register(this.buildModel()).subscribe(response => {
-      console.log(response);
-      this.cancel();
-      this.notificationService.showSuccess("You have successfully registered your sports center", "")
-      this.router.navigate(['/home'])
-    }, error => {
-      console.log(error);
-    })
+    this.formSubmitted = true;
+
+    if(this.registerForm.valid) {
+      this.userService.register(this.buildModel()).subscribe(response => {
+        console.log(response);
+        this.cancel();
+        this.notificationService.showSuccess("You have successfully registered your sports center", "")
+        this.router.navigate(['/home'])
+      }, error => {
+        console.log(error);
+      })
+    }
   }
 
   buildModel(): any {
@@ -83,9 +87,7 @@ export class RegisterCenterComponent implements OnInit {
       email: this.registerForm.get("email").value,
       password: this.registerForm.get("password").value,
       address: this.registerForm.get("address").value,
-      firstName: this.registerForm.get("firstName").value,
-      lastName: this.registerForm.get("lastName").value,
-      age: this.registerForm.get("age").value
+      sports: this.buildSports(this.registerForm.get("sports").value)
     }
   }
 
@@ -93,5 +95,13 @@ export class RegisterCenterComponent implements OnInit {
     console.log(this.registerForm.get("email"))
     console.log("canceled");
     this.router.navigate([''])
+  }
+
+  buildSports(sports: any): string {
+    var final = "";
+    for(let i = 0; i < sports.length; i++) {
+      final = final + sports[i].item_text + ';'
+    }
+    return final;
   }
 }

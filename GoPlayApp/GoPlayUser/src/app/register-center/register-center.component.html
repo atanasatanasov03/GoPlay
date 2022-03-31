@@ -66,6 +66,28 @@
                     </div>
                   </div>
 
+                  <div class="row d-flex justify-content-center">
+                    <div class="col-md-6">
+                      <div class="form-group">
+
+                        <label class="form-label" for="sports">Enter 1-4 of the sports that are available at the sports center</label>
+                        <ng-multiselect-dropdown
+                            formControlName="sports"
+                            name="sports" 
+                            [settings]="this.dropdownSettings"
+                            [data]="this.sports"
+                            [ngClass]="{ 'is-invalid': ( formSubmitted && registerForm.controls.sports.errors) || (!registerForm.controls.sports.pristine && registerForm.controls.sports.invalid) }">
+                        </ng-multiselect-dropdown>
+                      
+                        <div class="invalid-feedback"
+                          *ngIf="( formSubmitted && registerForm.controls.sports.errors) || (!registerForm.controls.sports.pristine && registerForm.controls.sports.invalid)">
+                          <div *ngIf="registerForm.controls.sports.errors.required">Please select the sports that are available at the sports center</div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
@@ -74,9 +96,6 @@
                         <input type="password" name="password" class="form-control"
                             id="password" name="password" formControlName="password"
                             [ngClass]="{ 'is-invalid': ( formSubmitted && registerForm.controls.password.errors) || (!registerForm.controls.password.pristine && registerForm.controls.password.invalid) }">
-                        <span style="display: block; margin-top: 5px; margin-bottom: 10px;color: #737373;">
-                          Choose a password for your new account.
-                        </span>
 
                         <div class="invalid-feedback"
                           *ngIf="( formSubmitted && registerForm.controls.password.errors) || (!registerForm.controls.password.pristine && registerForm.controls.password.invalid)">
@@ -93,9 +112,6 @@
                         <input type="password" class="form-control" id="confirm_password" 
                             name="confirm_password" formControlName="repeatPassword"
                             [ngClass]="{ 'is-invalid': ( formSubmitted && registerForm.controls.repeatPassword.errors) || (!registerForm.controls.repeatPassword.pristine && registerForm.controls.repeatPassword.invalid) }">
-                        <span style="display: block; margin-top: 5px; margin-bottom: 10px; color: #737373;">
-                          Type the password again. Passwords must match.
-                        </span>
 
                         <div class="invalid-feedback"
                           *ngIf="( formSubmitted && registerForm.controls.repeatPassword.errors) || (!registerForm.controls.repeatPassword.pristine && registerForm.controls.repeatPassword.invalid)">

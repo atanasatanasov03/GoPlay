@@ -11,5 +11,6 @@
         public DateTime? mutedOn { get; set; }
         public int? mutedFor { get; set; }
         public bool banned { get; set; } = false;
+        public bool verified { get; set; }
     }
 }

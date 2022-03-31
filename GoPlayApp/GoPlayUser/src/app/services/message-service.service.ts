@@ -7,6 +7,7 @@ import { Message } from '../models/Message';
 import { UserServiceService } from './user.service';
 import { LocalStorageService } from './local-storage.service';
 import * as signalR from '@microsoft/signalr';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class MessageServiceService {
   private apiUrl = 'https://localhost:7170/chat';
   private hubConnection: HubConnection;
 
-  public groups: string[];
+  public groups: string[] = new Array();
   public groupName: string;
   public messages: Message[] = [];
 
@@ -24,7 +25,8 @@ export class MessageServiceService {
 
   constructor(private http: HttpClient,
     private localStorage: LocalStorageService,
-    private userService: UserServiceService) { }
+    private userService: UserServiceService,
+    private notificationService: NotificationService) { }
 
   public connect = () => {
     this.startConnection();
@@ -66,9 +68,16 @@ export class MessageServiceService {
   }
 
   public joinGroup() {
-    if (!this.groups.includes(this.groupName)) this.groups.push(this.groupName);
+    if (this.groups.length == 0 || !this.groups.includes(this.groupName)) this.groups.push(this.groupName);
 
-    this.getMessagesForGroup(this.groupName).subscribe((ms:Message[]) => this.messages = ms);
+    this.getMessagesForGroup(this.groupName).subscribe((ms:Message[]) => {
+      if(ms != null) {
+        console.log(ms)
+        this.messages = ms
+      } 
+      else
+        this.messages = new Array()
+    });
 
     this.hubConnection.invoke("AddToGroup", this.groupName, this.userService.user.userName).catch(err => console.log(err));
     this.inGroup = true;
@@ -78,8 +87,13 @@ export class MessageServiceService {
     this.http.post(this.apiUrl + "/removeFromGroup?username=" + this.userService.user.userName + "&groupname=" + this.groupName, "").subscribe(_ => {
       const index = this.groups.indexOf(this.groupName);
       this.groups.splice(index, 1);
-      this.groupName = this.groups[0];
-      this.joinGroup();
+      if(this.groups.length != 0) { 
+        this.groupName = this.groups[0];
+        this.joinGroup();
+      } else {
+        this.groupName = null;
+        this.inGroup = false;
+      }
     });
   }
 

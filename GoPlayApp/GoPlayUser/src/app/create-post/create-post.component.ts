@@ -16,6 +16,9 @@ export class CreatePostComponent implements OnInit {
   @Output() cancelCreate = new EventEmitter();
   playPost: boolean = true;
 
+  minDate: Date = new Date();
+  maxDate: Date = new Date();
+
   createForm: FormGroup;
   formSubmitted = false;
 
@@ -32,12 +35,14 @@ export class CreatePostComponent implements OnInit {
 
   ngOnInit(): void {
     this.createForm = this.builder.group({
-      heading: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(25)]],
-      content: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(60)]],
+      heading: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]],
+      content: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(200)]],
       address: [''],
+      expiration: [''],
       picture: ['']
     })
     this.toggle();
+    this.maxDate.setMonth(this.minDate.getMonth() + 1);
   }
 
   onFileSelected(event: any) {
@@ -75,7 +80,8 @@ export class CreatePostComponent implements OnInit {
       heading: this.createForm.get("heading").value,
       content: this.createForm.get("content").value,
       play: this.playPost,
-      address: this.createForm.get("address").value
+      address: this.createForm.get("address").value,
+      expires: this.createForm.get("expiration").value
     } : {
       userName: this.userService.user.userName,
       heading: this.createForm.get("heading").value,
@@ -87,14 +93,18 @@ export class CreatePostComponent implements OnInit {
 
   toggle() {
     if(this.playPost == true) {
-      this.createForm.controls.address.setValidators([Validators.required, Validators.minLength(10), Validators.maxLength(50)]);
+      this.createForm.controls.address.setValidators([Validators.required, Validators.minLength(10), Validators.maxLength(100)]);
       this.createForm.controls.address.updateValueAndValidity();
+      this.createForm.controls.expiration.setValidators(Validators.required);
+      this.createForm.controls.expiration.updateValueAndValidity();
 
       this.createForm.controls.picture.setValidators(null);
       this.createForm.controls.picture.updateValueAndValidity();
     } else {
       this.createForm.controls.address.setValidators(null);
       this.createForm.controls.address.updateValueAndValidity();
+      this.createForm.controls.expiration.setValidators(null);
+      this.createForm.controls.expiration.updateValueAndValidity();
 
       this.createForm.controls.picture.setValidators([Validators.required]);
       this.createForm.controls.picture.updateValueAndValidity();

@@ -158,6 +158,27 @@ namespace GoPlayServer.Data
                 }
             }
 
+            if((user.mutedOn != null && user.mutedFor != null) && DateTime.Now >= ((DateTime)user.mutedOn).AddDays((double)user.mutedFor))
+            {
+                user.mutedOn = null;
+                user.mutedFor = null;
+                Update(user);
+                _context.SaveChanges();
+                return new AppUserDTO
+                {
+                    userName = user.userName,
+                    role = user.role,
+                    firstName = user.firstName,
+                    lastName = user.lastName,
+                    email = user.email,
+                    token = GenerateJwtToken(user),
+                    mutedOn = null,
+                    mutedFor = null,
+                    banned = user.banned,
+                    verified = user.validEmail
+                };
+            }
+
             return new AppUserDTO
             {
                 userName = user.userName,
@@ -168,7 +189,8 @@ namespace GoPlayServer.Data
                 token = GenerateJwtToken(user),
                 mutedOn = user.mutedOn,
                 mutedFor = user.mutedFor,
-                banned = user.banned
+                banned = user.banned,
+                verified = user.validEmail
             };
         }
     }

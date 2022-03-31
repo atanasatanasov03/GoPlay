@@ -12,6 +12,8 @@ using Newtonsoft.Json;
 using GoPlayServer.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using System.Web.Http.Cors;
+using System.Net.Mail;
+using System.Net;
 
 namespace GoPlayServer.Controllers
 {
@@ -22,18 +24,24 @@ namespace GoPlayServer.Controllers
     {
         private readonly AppDbContext _context;
         private readonly IUserRepository _userRepo;
-        
-        public UserController(AppDbContext context, IUserRepository userRepo)
+        private readonly IConfiguration _config;
+        private readonly ILogger<UserController> _logger;
+
+        public UserController(AppDbContext context, IUserRepository userRepo, IConfiguration config, ILogger<UserController> logger)
         {
             _context = context;
             _userRepo = userRepo;
+            _config = config;
+            _logger = logger;
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult<AppUserDTO>> register(RegisterUserDTO RegisterUserDTO)
         {
-            if (await UserExists(RegisterUserDTO.userName)) return new BadRequestResult();
+            if (await UserExists(RegisterUserDTO.userName)) return new UnprocessableEntityResult();
+
+            if (await EmailIsTaken(RegisterUserDTO.email)) return new ConflictResult();
 
             using var hmac = new HMACSHA512();
 
@@ -54,6 +62,24 @@ namespace GoPlayServer.Controllers
             _userRepo.AddUser(user);
             await _context.SaveChangesAsync();
 
+            try
+            {
+                using (SmtpClient client = new SmtpClient("smtp.gmail.com", 587))
+                {
+                    client.EnableSsl = true;
+                    client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    client.UseDefaultCredentials = false;
+                    client.Credentials = new NetworkCredential(_config["Mail:Address"], _config["Mail:AppPassword"]);
+                    MailMessage msg = new MailMessage();
+                    msg.To.Add(user.email);
+                    msg.From = new MailAddress(_config["Mail:Address"]);
+                    msg.Subject = "Confirm your email";
+                    msg.Body = "Thank you for registering in the GoPlay sports social media! To be able to post, answer to posts and chat with other users please confirm your email by clicking on the link: http://localhost:4200/confirmEmail?userId=" + user.Id;
+                    client.Send(msg);
+                }
+            }
+            catch (Exception ex) { }
+
             return new AppUserDTO
             {
                 userName = user.userName,
@@ -61,6 +87,7 @@ namespace GoPlayServer.Controllers
                 firstName = user.firstName,
                 lastName = user.lastName,
                 email = user.email,
+                verified = false,
                 token = _userRepo.GenerateJwtToken(user)
             };
         }
@@ -168,6 +195,20 @@ namespace GoPlayServer.Controllers
             });
         }
 
+        [HttpPost("confirmEmail")]
+        public async Task<ActionResult> ConfirmEmail(Guid userId)
+        {
+            var user = await _userRepo.GetUserByIdAsync(userId);
+            user.validEmail = true;
+            _userRepo.Update(user);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        public async Task<bool> EmailIsTaken(string email)
+        {
+            return _context.AppUsers.AsQueryable().Any(u => u.email == email);
+        }
         public async Task<bool> UserExists(string username)
         {
             return await _context.AppUsers.AnyAsync(x => x.userName == username.ToLower());

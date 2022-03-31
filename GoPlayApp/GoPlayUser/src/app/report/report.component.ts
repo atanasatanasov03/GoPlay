@@ -22,7 +22,7 @@ export class ReportComponent implements OnInit {
 
   ngOnInit() {
     this.reportForm = this.builder.group({
-      reason: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(60)]]
+      reason: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(200)]]
     });
   }
 

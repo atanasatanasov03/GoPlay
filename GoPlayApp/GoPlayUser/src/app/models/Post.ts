@@ -8,5 +8,6 @@ export interface Post {
 
   address?: string;
   groupName?: string;
+  expires?: Date;
   pictureUrl?: string;
 }

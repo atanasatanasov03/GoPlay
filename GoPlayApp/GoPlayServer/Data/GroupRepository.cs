@@ -48,6 +48,17 @@ namespace GoPlayServer.Data
             return usersQuery;
         }
 
+        public async Task<string> UserInGroup(string username, string groupname)
+        {
+            IQueryable<AppUser> usersInGroup = await this.GetUsersInGroup(groupname);
+
+            AppUser user = await _context.AppUsers.SingleOrDefaultAsync(u => u.userName == username);
+            if (user == null) return null;
+
+            if (usersInGroup.Contains(user)) return "true";
+            else return "false";
+        }
+
         public async Task<IQueryable<Group>> GetGroupsForUser(string username)
         {
             AppUser user = await _context.AppUsers.SingleOrDefaultAsync(u => u.userName == username);

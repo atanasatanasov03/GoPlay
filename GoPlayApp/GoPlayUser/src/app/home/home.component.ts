@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, SimpleChange } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocalStorageService } from 'app/services/local-storage.service';
+import { NotificationService } from 'app/services/notification.service';
 import { Post } from '../models/Post';
 import { Reported } from '../models/Reported';
 import { MessageServiceService } from '../services/message-service.service';
@@ -26,7 +27,8 @@ export class HomeComponent implements OnInit {
     public localStorage: LocalStorageService,
     public postService: PostsService,
     private router: Router,
-    private messageService: MessageServiceService) { this.model.pageSize = 4;}
+    private messageService: MessageServiceService,
+    private notificationService: NotificationService) { this.model.pageSize = 4;}
 
   ngOnInit(): void {
     if (this.localStorage.getUser() == null) {
@@ -62,9 +64,13 @@ export class HomeComponent implements OnInit {
   }
 
   sendToGroup(post: Post) {
+    if(!this.messageService.groups.includes(post.groupName))
+      this.notificationService.showSuccess("You have successfully joined " + post.userName + "'s group for " + post.heading, "")
+    else 
+      this.notificationService.showInfo("You are already a member of this group", "")
     this.messageService.groupName = post.groupName;
     this.messageService.joinGroup();
-    this.router.navigate(["/messages"])
+    
   }
 
   cancelCreatePost(event: boolean) {

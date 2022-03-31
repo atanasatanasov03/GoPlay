@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark d-flex justify-content-between">
 
   <div class="container-fluid" style="padding: 0%; margin: 0%; width: 53%">
-    <a class="navbar-brand" *ngIf="this.localStorage.getUser() != null" href="/home">GoPlay</a>
+    <a class="navbar-brand" *ngIf="this.localStorage.getUser() != null" (click)="sendToHome()" routerLinkActive="active" style="cursor: pointer;">GoPlay</a>
     <a class="navbar-brand" *ngIf="this.localStorage.getUser() == null" href="#">GoPlay</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -11,7 +11,7 @@
         <li class="nav-item">
           <a class="nav-link" (click)="sendToHome()" routerLinkActive="active">Home</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="this.userService.user.verified">
           <a class="nav-link" (click)="sendToMessages()" routerLinkActive="active">Messages</a>
         </li>
       </ul>

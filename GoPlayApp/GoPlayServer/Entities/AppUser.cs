@@ -20,6 +20,7 @@
         public int? mutedFor { get; set; }
         public DateTime? mutedOn { get; set; }
         public bool banned { get; set; } = false;
+        public bool validEmail { get; set; } = false;
         public byte[] passwordHash { get; set; }
         public byte[] passwordSalt { get; set; }
     }

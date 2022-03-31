@@ -6,7 +6,7 @@
   </div>
   <main class="page-main" style="position: relative">
     <div style="margin-top: 10%;" class=" d-flex justify-content-center align-items-center">
-      <h1 *ngIf="this.localStorage.getUser().role != 'admin'" style="text-align:center">HOME PAGE FEED</h1>
+      <h1 *ngIf="this.localStorage.getUser().role != 'admin'" style="text-align:center; font-size:xx-large;">HOME PAGE FEED</h1>
       <div *ngIf="this.localStorage.getUser().role == 'admin'">
         <ng-toggle onColor="success"
                    onText="Home Page"
@@ -23,27 +23,31 @@
       <div *ngFor="let post of this.postService.Posts">
         <div *ngIf="post.play" class="card" style="width: 100%; margin-top: 20px; margin-bottom: 20px">
           <div class="card-header d-flex aligns-items-center justify-content-between" style="margin-bottom: 10px">
-            <h5 class="card-title" style="display:inline-block; margin-top:6px; margin-bottom:6px">{{post.heading}}</h5>
-            <button type="button" *ngIf="post.userName != this.userService.user.userName" (click)="reportPost(post)" class="btn btn-primary btn-sm" style="margin-top:6px; margin-bottom: 6px">Report</button>
+            <h5 class="card-title" style="display:inline-block; margin-top:6px; margin-bottom:6px; font-size: x-large; vertical-align: middle;">{{post.heading}}</h5>
+            <button type="button" *ngIf="post.userName != this.userService.user.userName && this.userService.user.verified" (click)="reportPost(post)" class="btn btn-primary btn-sm" style="margin-top:6px; margin-bottom: 6px">Report</button>
           </div>
           <div class="card-body">
-            <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block">Posted by: {{post.userName}}</h6>
-            <p class="card-text">{{post.content}}</p>
-            <p class="card-text">Address: {{post.address}}</p>
-            <div class="d-flex aligns-items-center justify-content-between">
-              <a class="card-link" style="cursor: pointer;" (click)="sendToGroup(post)">Send to Group</a>
-              <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block"> {{post.timeOfCreation | date : 'short'}}</h6>
-            </div>
+            <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block; font-size: small">Posted by: {{post.userName}}</h6>
+            <p class="card-text" style="font-size: large; margin-top: 8px;">{{post.content}}</p>
+            <p class="card-text" style="font-size: medium; margin-top: 12px; margin-bottom: 10px">Address: {{post.address}}</p>
+          </div>
+          <div class="card-footer d-flex aligns-items-center justify-content-between">
+            <a class="card-link" *ngIf="this.userService.user.verified && this.userService.user.userName != post.userName" style="cursor: pointer;" (click)="sendToGroup(post)">Join Group</a>
+            <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block; font-size: medium;">Post expires {{post.expires | date : 'shortDate'}}</h6>
           </div>
         </div>
         <div *ngIf="!post.play">
           <div class="card" style="width: 100%; margin-top: 20px; margin-bottom: 20px">
             <img class="card-img-top" src={{post.pictureUrl}}>
+            <div class="card-header">
+              <h5 class="card-title" style="display:inline-block; margin-top:6px; margin-bottom:6px; font-size: x-large; vertical-align: middle;">{{post.heading}}</h5>
+            </div>
             <div class="card-body">
-              <h5 class="card-title">{{post.heading}}</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Posted by: {{post.userName}}</h6>
+              <p class="card-subtitle mb-2 text-muted" style="display:inline-block; font-size: small">Posted by: {{post.userName}}</p>
               <p class="card-text">{{post.content}}</p>
-              <h6 class="card-subtitle mb-2 text-muted" style="float: right"> {{post.timeOfCreation | date : 'short'}}</h6>
+            </div>
+            <div class="card-footer">
+              <h6 class="card-subtitle mb-2 text-muted" style="float: right; font-size: medium;"> {{post.timeOfCreation | date : 'short'}}</h6>
             </div>
           </div>
         </div>
@@ -60,13 +64,13 @@
       <div *ngFor="let report of this.postService.Reported">
         <div class="card" style="width: 100%; margin-top: 20px; margin-bottom: 20px">
           <div class="card-header">
-            <h5 class="card-title" style="display:inline-block; margin-top: 6px; margin-bottom: 6px;">{{report.reportedPost.heading}}</h5>
+            <h5 class="card-title" style="display:inline-block; margin-top: 6px; margin-bottom: 6px; font-size: x-large">{{report.reportedPost.heading}}</h5>
           </div>
           <div class="card-body">
-            <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block">Posted by: {{report.reportedPost.userName}}</h6>
-            <p class="card-text">{{report.reportedPost.content}}</p>
-            <p class="card-text">Address: {{report.reportedPost.address}}</p>
-            <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block"> {{report.reportedPost.timeOfCreation | date : 'short'}}</h6>
+            <h6 class="card-subtitle mb-2 text-muted" style="display:inline-; font-size: small">Posted by: {{report.reportedPost.userName}}</h6>
+            <p class="card-text" style="font-size: large">{{report.reportedPost.content}}</p>
+            <p class="card-text" style="font-size: medium">Address: {{report.reportedPost.address}}</p>
+            <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block; font-size: medium"> {{report.reportedPost.timeOfCreation | date : 'short'}}</h6>
           </div>
           <div class="card-footer">
             <div class="row mb-3 mt-2 d-flex justify-content-center" style="width: 100%; text-align:center">

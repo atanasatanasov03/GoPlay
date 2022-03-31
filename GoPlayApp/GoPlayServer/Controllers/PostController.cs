@@ -76,6 +76,7 @@ namespace GoPlayServer.Controllers
                     timeOfCreation = DateTime.Now,
                     play = newPostDTO.play,
 
+                    expires = newPostDTO.expires,
                     address = newPostDTO.address
                 };
                 playPosts.Append(post);
@@ -179,6 +180,7 @@ namespace GoPlayServer.Controllers
             var user = await _userRepo.GetUserByUsernameAsync(reportDTO.username);
             if (user == null) return new BadRequestResult();
             
+            
             var report = new ReportedPost
             {
                 reportedPostId = reportDTO.postId,
@@ -186,9 +188,12 @@ namespace GoPlayServer.Controllers
                 reporterId = user.Id,
                 reason = reportDTO.reason
             };
-
-            await _postRepo.ReportPostAsync(report);
-            await _context.SaveChangesAsync();
+            
+            if (!_context.ReportedPosts.Contains(report))
+            {
+                await _postRepo.ReportPostAsync(report);
+                await _context.SaveChangesAsync();
+            }
 
             return Ok();
         }
@@ -250,7 +255,8 @@ namespace GoPlayServer.Controllers
                     content = post.content,
                     timeOfCreation = post.timeOfCreation,
                     play = post.play,
-
+                    
+                    expires = post.expires,
                     address = post.address,
                     groupName = group.groupName
                 };

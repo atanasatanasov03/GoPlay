@@ -3,6 +3,7 @@ using System;
 using GoPlayServer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoPlayServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220329121321_validEmail")]
+    partial class validEmail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
@@ -147,9 +149,6 @@ namespace GoPlayServer.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("expires")
-                        .HasColumnType("TEXT");
-
                     b.Property<Guid?>("groupId")
                         .HasColumnType("TEXT");
 
@@ -164,6 +163,9 @@ namespace GoPlayServer.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("timeOfCreation")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("timeOfMeeting")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("userId")

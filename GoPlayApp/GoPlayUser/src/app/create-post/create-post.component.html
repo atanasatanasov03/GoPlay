@@ -1,9 +1,9 @@
-<div class="card" *ngIf="this.userService.user.mutedOn == null">
+<div class="card" *ngIf="this.userService.user.mutedOn == null && this.userService.user.verified">
   
   <div class="card-header d-flex justify-content-center align-items-center" style="background-color: #f2f2f2">
     
     <div style="width: 100%; display: flex; align-items: center; justify-content: center;" *ngIf="this.userService.user.role == 'regular'">
-      <h5 style="margin-bottom: 0%">CREATE PLAY POST</h5>
+      <h5 style="margin-bottom: 0%; font-size: x-large;">CREATE PLAY POST</h5>
     </div>
     
     <div *ngIf="this.userService.user.role == 'center'">
@@ -20,7 +20,7 @@
 
   </div>
 
-  <form style="margin: 6% 4%" [formGroup]="createForm" (ngSubmit)="createPost()" autocomplete="off">
+  <form style="margin: 16px 12px" [formGroup]="createForm" (ngSubmit)="createPost()" autocomplete="off">
 
     <i class="fas fa-user fa-lg me-3 fa-fw"></i>
     <div class="form-outline flex-fill mb-0">
@@ -32,7 +32,7 @@
         *ngIf="( formSubmitted && createForm.controls.heading.errors) || (!createForm.controls.heading.pristine && createForm.controls.heading.invalid)">
         <div *ngIf="createForm.controls.heading.errors.required">Post heading is required</div>
         <div *ngIf="createForm.controls.heading.errors.minLength == undefined || createForm.controls.heading.errors.maxLength == undefined">
-          Post heading must be between 5 and 25 characters
+          Post heading must be between 5 and 50 characters
         </div>
       </div>
 
@@ -48,7 +48,7 @@
         *ngIf="( formSubmitted && createForm.controls.content.errors) || (!createForm.controls.content.pristine && createForm.controls.content.invalid)">
         <div *ngIf="createForm.controls.content.errors.required">Post content is required</div>
         <div *ngIf="createForm.controls.content.errors.minLength == undefined || createForm.controls.content.errors.maxLength == undefined">
-          Post content must be between 10 and 60 characters
+          Post content must be between 10 and 200 characters
         </div>
       </div>
 
@@ -64,9 +64,13 @@
         *ngIf="( formSubmitted && createForm.controls.address.errors) || (!createForm.controls.address.pristine && createForm.controls.address.invalid)">
         <div *ngIf="createForm.controls.address.errors.required">Post address is required</div>
         <div *ngIf="createForm.controls.address.errors.minLength == undefined || createForm.controls.address.errors.maxLength == undefined">
-          Post address must be between 10 and 50 characters
+          Post address must be between 10 and 100 characters
         </div>
       </div>
+    </div>
+
+    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+    <div class="form-outline flex-fill mb-0">
 
       <input *ngIf="!this.playPost" style="margin-top: 5%" type="file"  accept="*.png.jpg" name="picture" (change)="onFileSelected($event)" formControlName="picture"
         [ngClass]="{ 'is-invalid': ( formSubmitted && createForm.controls.picture.errors) || (!createForm.controls.picture.pristine && createForm.controls.picture.invalid) }">
@@ -78,6 +82,28 @@
 
     </div>
     
+    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+    <div class="form-outline flex-fill mb-0">
+
+      <input matInput style="margin-top:5%"
+        formControlName="expiration"
+        [min]="minDate"
+        [max]="maxDate"
+        [matDatepicker]="expirationPicker"
+        (click)="expirationPicker.open()"
+        [ngClass]="{ 'is-invalid': ( formSubmitted && createForm.controls.expiration.errors) || (!createForm.controls.expiration.pristine && createForm.controls.expiration.invalid) }">
+
+      <mat-datepicker-toggle matSuffix [for]="expirationPicker"></mat-datepicker-toggle>
+
+      <mat-datepicker #expirationPicker></mat-datepicker>
+
+      <div class="invalid-feedback"
+        *ngIf="( formSubmitted && createForm.controls.expiration.errors) || (!createForm.controls.expiration.pristine && createForm.controls.expiration.invalid)">
+        <div *ngIf="createForm.controls.expiration.errors.required">Date of meeting is required</div>
+      </div>
+
+    </div>
+
     <div style="margin-top: 5%" class="d-flex flex-row justify-content-center">
       <button type="submit" value="" class="btn btn-primary btn-lg mr-5">Create post</button>
       <button type="button" (click)="cancel()" class="btn btn-outline-primary">Cancel</button>
@@ -90,17 +116,33 @@
   <div class="card-header d-flex justify-content-center align-items-center" style="background-color: #f2f2f2">
 
     <div style="width: 100%; display: flex; align-items: center; justify-content: center;">
-      <h5 style="margin-bottom: 0%">OOPS</h5>
+      <h5 style="margin-bottom: 0%; font-size: xx-large;">Oops</h5>
     </div>
 
   </div>
   
   <div class="card-body">
-    <h6>It seems that you've been muted</h6>
-    <h6>Your account has been restricted from posting until {{this.userService.mutedUntil | date: 'short'}}</h6>
+    <h6 style="font-size: x-large">It seems that you've been muted</h6>
+    <h6 style="font-size: larger">Your account has been restricted from posting until {{this.userService.mutedUntil | date: 'short'}}</h6>
   </div>
   
   <div style="margin-bottom: 5%" class="d-flex flex-row justify-content-center">
     <button type="button" (click)="cancel()" class="btn btn-outline-primary">Close</button>
+  </div>
+</div>
+
+<div class="card" *ngIf="!this.userService.user.verified">
+  <div class="card-header d-flex justify-content-center align-items-center" style="background-color: #f2f2f2">
+    <div style="width: 100%; display: flex; align-items: center; justify-content: center;">
+      <h1 style="margin-bottom: 0%">OOPS</h1>
+    </div>
+  </div>
+  <div class="card-body">
+    <h2>It seems that you haven't verified your account yet!</h2>
+    <h2>You won't be able to post or chat with other users until you've done that. Check your email.</h2>
+  
+    <div style="width: 100%; display: flex; align-items: center; justify-content: center;">
+      <button type="button" (click)="cancel()" class="btn btn-outline-primary">Close</button>
+    </div>
   </div>
 </div>

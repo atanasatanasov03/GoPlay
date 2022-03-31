@@ -11,4 +11,5 @@ export class User {
   mutedOn: string;
   mutedFor: number;
   banned: boolean;
+  verified: boolean;
 }

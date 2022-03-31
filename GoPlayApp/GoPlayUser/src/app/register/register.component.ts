@@ -78,7 +78,8 @@ export class RegisterComponent implements OnInit {
         this.notificationService.showSuccess("You have successfully registered your account", "")
         this.router.navigate(['/home'])
       }, error => {
-        console.log(error);
+        if(error.status == 409) this.notificationService.showError("A user has already registered with this email address", "Error")
+        if(error.status == 422) this.notificationService.showError("A user has already registered with this username", "Error")
       })
     }
   }

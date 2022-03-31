@@ -50,12 +50,17 @@ export class UserServiceService {
           console.log(this.user);
           if (this.user.mutedOn != null) {
             this.mutedUntil.setDate(new Date(Date.parse(this.user.mutedOn)).getDate() + this.user.mutedFor);
-            console.log(this.mutedUntil);
+            this.mutedUntil.setHours(this.mutedUntil.getHours() + 2);
           }
         }
         return user;
       })
     );
+  }
+
+  confirmEmail(id: string) {
+    console.log("confirming email?")
+    return this.http.post(this.accUrl + "/confirmEmail?userId=" + id, "").subscribe();
   }
 
   getUserByUsername(username: string) {
